@@ -31,13 +31,18 @@ class chatServer
 	
 public:
 	chatServer();
+	~chatServer();
 	int init();
 	bool run();
+	void errorVerbose(int error);
 
 private:
 
 	int checkPort(uint16_t _port);
 	int checkCommandChar(char _character);
-
+	int readMessage(SOCKET _socket, char* buffer, int32_t size);
+	int sendMessage(SOCKET _socket, const char* data, int32_t length);
+	int tcpReceive(SOCKET _socket, char& _data, int _length);
+	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
 };
 

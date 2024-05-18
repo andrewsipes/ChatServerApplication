@@ -6,17 +6,16 @@
 
 int main(){
     chatServer server;
-    bool exit = false;
+    bool exit = true;
 
     int result = server.init();
     if (result != SUCCESS) {
-
-        std::cout << "ERROR CODE:" << result;
+        server.errorVerbose(result);
     }
 
-    while (true) {
+    while (exit) {
 
-        server.run();
+       exit = server.run();
 
     }
   

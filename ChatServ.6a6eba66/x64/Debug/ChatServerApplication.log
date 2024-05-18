@@ -1,2 +1,7 @@
 ﻿  chatServer.cpp
+  clientHandler.cpp
+  main.cpp
+  messageHandler.cpp
+C:\Users\andre\Desktop\ChatServerApplication\messageHandler.cpp(16,50): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe
