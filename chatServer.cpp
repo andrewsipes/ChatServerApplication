@@ -7,7 +7,7 @@ chatServer::chatServer() {
 	
 	std::cout << "Welcome to the Chat Server!\nFirst, we need to setup the server\n";
 
-	Setup();
+	Setup(); 
 	
 }
 
