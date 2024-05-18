@@ -114,13 +114,12 @@ int chatServer::checkCommandChar(char _character) {
 	
 	for (char _char : validChars) {
 
-		if (_character != _char) {
-			return SETUP_ERROR;
-		}
-
-		else if (_character == _char) {
+		if (_character == _char) {
 			return SUCCESS;
 		}
+
 	}
+
+	return SETUP_ERROR;
 
 }
