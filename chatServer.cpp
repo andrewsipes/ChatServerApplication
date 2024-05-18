@@ -92,7 +92,7 @@ chatServer::chatServer() {
 int chatServer::init() {
 
 	lSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
+	
 	if (lSocket == INVALID_SOCKET)
 		return SETUP_ERROR;
 
@@ -106,13 +106,14 @@ int chatServer::init() {
 	}
 
 	//Listen
-	if (listen(lSocket, capacity) == SOCKET_ERROR) {
+	if (listen(lSocket, 5) == SOCKET_ERROR) {
 		return SETUP_ERROR;
 	}
 
-	socketList.push_back(lSocket);
-	FD_ZERO(&readySet);
 	FD_ZERO(&masterSet);
+	FD_SET(lSocket, &masterSet);
+	socketList.push_back(lSocket);
+	
 
 	return SUCCESS;
 
@@ -148,22 +149,33 @@ int chatServer::checkCommandChar(char _character) {
 //This is the loop we are using to handle communication between clients
 bool chatServer::run() {
 
-	//ClientHandler->handleClients(lSocket);
+	timeval tv;
+	tv.tv_sec = 5;
 
-	select(0, &readySet, NULL, NULL, NULL);
+	readySet = masterSet;
+	int numReady = select(0, &readySet, NULL, NULL, &tv);
 
-	for (SOCKET socket : socketList) {
-
-		if (socket == lSocket) {
-
-			SOCKET comSocket = accept(lSocket, NULL, NULL);
-
-			socketList.push_back(comSocket);
-			
-		}
-
+	if (numReady == -1) {
+		return false;
 	}
 
+	else if (FD_ISSET(lSocket, &readySet)){
+		SOCKET newSocket = accept(lSocket, NULL, NULL);
+		socketList.push_back(newSocket);
+		FD_SET(newSocket, &masterSet);
+	}
+	
+	for (SOCKET socket : socketList) {
 
+		if ((FD_ISSET(socket, &readySet))) {
+			int message = 0;
+			int receive = recv(socket, (char*)&message, sizeof(char), 0);
+
+			if (receive != -1)
+				std::cout << receive << std::endl;
+		}
+		
+	}
+	
 	return true;
 }

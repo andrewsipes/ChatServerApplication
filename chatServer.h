@@ -21,9 +21,8 @@ class chatServer
 	
 	clientHandler* ClientHandler;
 	messageHandler* MessageHandler;
-
-	SOCKET lSocket;	   //Listening Socket
-	SOCKET comSocket;	   
+   
+	SOCKET lSocket;
 	sockaddr_in cAddr; //Empty Address for clients connecting
 
 	//for multiplexing

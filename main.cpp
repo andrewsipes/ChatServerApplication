@@ -6,6 +6,7 @@
 
 int main(){
     chatServer server;
+    bool exit = false;
 
     int result = server.init();
     if (result != SUCCESS) {
@@ -13,7 +14,9 @@ int main(){
         std::cout << "ERROR CODE:" << result;
     }
 
-    while (server.run()) {
+    while (true) {
+
+        server.run();
 
     }
   
