@@ -1,3 +1,3 @@
 ﻿  chatServer.cpp
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(108,1): warning C4715: 'chatServer::checkCommandChar': not all control paths return a value
+C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(126,1): warning C4715: 'chatServer::checkCommandChar': not all control paths return a value
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe

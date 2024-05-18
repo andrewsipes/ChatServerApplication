@@ -2,13 +2,25 @@
 #include <iostream>
 
 
-
 chatServer::chatServer() {
-	
-	std::cout << "Welcome to the Chat Server!\nFirst, we need to setup the server\n";
+	//Initialize the wsaData object
+	WSADATA wsaData;
+	WSAStartup(WINSOCK_VERSION, &wsaData);
+
+	//Hostname	
+	gethostname(hostname, sizeof(hostname));
+
+	//IP Address	
+	struct addrinfo aInfo, *result;
+	memset(&aInfo, 0, sizeof(aInfo));
+	aInfo.ai_family = AF_INET;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
+	getaddrinfo(hostname, NULL, &aInfo, &result);
+	struct sockaddr_in* ipv4 = (sockaddr_in*)(result->ai_addr);
+	inet_ntop(AF_INET, &ipv4->sin_addr, ipAddr, INET_ADDRSTRLEN); //Convert
+
+	std::cout << "HostName:" << hostname << "\nIPAddress: " << ipAddr << "\n\nLet's setup the server\n";
 
 	Setup(); 
-	
 }
 
 //Gets the details from the user on the initial setup
@@ -70,6 +82,13 @@ void chatServer::Setup() {
 
 	}
 
+	std::cout << "\nServer has been Setup, see configuration below:" << std::endl;
+	std::cout << "Hostname: " << hostname << std::endl;
+	std::cout << "IP Address: " << ipAddr << std::endl;
+	std::cout << "Port: " << port << std::endl;
+	std::cout << "Capacity: " << capacity << std::endl;
+	std::cout << "Command Char: " << commandChar << std::endl;
+
 }
 
 int chatServer::init(uint16_t _port) {
@@ -104,9 +123,4 @@ int chatServer::checkCommandChar(char _character) {
 		}
 	}
 
-}
-
-chatServer::~chatServer() {
-
-	delete []hostname;
 }

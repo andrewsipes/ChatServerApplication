@@ -7,6 +7,8 @@
 #include "logger.h"
 #include <stdint.h>
 #include "errors.h"
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 class chatServer
 {
@@ -15,7 +17,9 @@ class chatServer
 	int capacity;
 	char commandChar;
 	const char validChars[5] = { '~', '@', '#', '$'};
-	char* hostname;
+	char hostname[1024];
+	char ipAddr[INET_ADDRSTRLEN];
+	
 
 public:
 	chatServer();
@@ -26,6 +30,6 @@ private:
 	void Setup();
 	int checkPort(uint16_t _port);
 	int checkCommandChar(char _character);
-	~chatServer()
+
 };
 
