@@ -14,4 +14,5 @@
 #define INCORRECT_IP 11
 #define NOT_LOGGED_IN 12
 #define INTERNAL_ERROR 13
+#define SETUP_ERROR -1
 

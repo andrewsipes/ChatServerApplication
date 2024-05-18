@@ -14,31 +14,60 @@ chatServer::chatServer() {
 //Gets the details from the user on the initial setup
 void chatServer::Setup() {
 
-	while (true) {
+	int input = SETUP_ERROR;
+
+	while (input != SUCCESS) {
 		std::cin.clear();
 		std::cout << "\nWhat port should the server listen on? ";
 		std::cin >> port;
 
-		if (checkPort(port) == INCORRECT_PORT) {
-			std::cout << "\nInvalid Port Entered, ports 0-1023 and 49152 are reserved.\n";
+		input = checkPort(port);
+		if (input == INCORRECT_PORT) {
+			std::cout << "\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again\n";
 			continue;
 		}
-
-		break;
-
 	}
 
-	while (true) {
+	input = SETUP_ERROR;
+
+	while (input != SUCCESS) {
 		std::cin.clear();
 		std::cout << "\nWhat is the user capacity for this server? ";
 		std::cin >> capacity;
 
-		if (ClientHandler.checkCapacity(capacity) == CAPACITY_REACHED) {
+		input = ClientHandler.checkCapacity(capacity);
+
+		if (input == CAPACITY_REACHED) {
 			std::printf("\nUnfortunately, the max capacity is %d, please try again.\n", MAX_CAPACITY);
 			continue;
 		}
 
-		break;
+	}
+
+	input = SETUP_ERROR;
+
+	while (input != SUCCESS) {
+		std::cin.clear();
+		std::cout << "\nPlease choose one of the following command characters (default is ~): ~, @, #, $ : ";
+
+		std::cin >> commandChar;
+		input = checkCommandChar(commandChar);
+
+		if (input != SUCCESS) {
+			std::cout << "\nYou did not enter a valid character, would like to use the default? Yes or No. ";
+
+			std::string response; std::cin >> response;
+
+			if (response == "Yes" || response == "yes" || response == "y" || response == "Y") {
+				commandChar = DEFAULT_COMMAND_CHAR;
+				input = SUCCESS;
+			}
+
+			else 
+				continue;
+			
+		}
+
 	}
 
 }
@@ -56,5 +85,28 @@ int chatServer::checkPort(uint16_t _port) {
 										// 49152 - 65535 are dynamic ports
 	}
 
-	else SUCCESS;
+	else 
+		return SUCCESS;
+}
+
+//verifies commandCharacter
+int chatServer::checkCommandChar(char _character) {
+
+	
+	for (char _char : validChars) {
+
+		if (_character != _char) {
+			return SETUP_ERROR;
+		}
+
+		else if (_character == _char) {
+			return SUCCESS;
+		}
+	}
+
+}
+
+chatServer::~chatServer() {
+
+	delete []hostname;
 }
