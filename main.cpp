@@ -2,11 +2,19 @@
 //
 
 #include "chatServer.h"
+#include <iostream>
 
-
-int main()
-{
-
+int main(){
     chatServer server;
+
+    int result = server.init();
+    if (result != SUCCESS) {
+
+        std::cout << "ERROR CODE:" << result;
+    }
+
+    while (server.run()) {
+
+    }
   
 }

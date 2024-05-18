@@ -12,22 +12,31 @@
 
 class chatServer
 {
-	clientHandler ClientHandler;
+	const char validChars[5] = { '~', '@', '#', '$'};
 	uint16_t port;
 	int capacity;
-	char commandChar;
-	const char validChars[5] = { '~', '@', '#', '$'};
 	char hostname[1024];
 	char ipAddr[INET_ADDRSTRLEN];
+	char commandChar;
 	
+	clientHandler* ClientHandler;
+	messageHandler* MessageHandler;
 
+	SOCKET lSocket;	   //Listening Socket
+	SOCKET comSocket;	   
+	sockaddr_in cAddr; //Empty Address for clients connecting
+
+	//for multiplexing
+	fd_set masterSet, readySet;
+	std::vector<SOCKET> socketList;
+	
 public:
 	chatServer();
-	int init(uint16_t port);
+	int init();
+	bool run();
 
 private:
 
-	void Setup();
 	int checkPort(uint16_t _port);
 	int checkCommandChar(char _character);
 

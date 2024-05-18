@@ -7,6 +7,9 @@ chatServer::chatServer() {
 	WSADATA wsaData;
 	WSAStartup(WINSOCK_VERSION, &wsaData);
 
+	MessageHandler = new messageHandler;
+	ClientHandler = new clientHandler(*MessageHandler);
+
 	//Hostname	
 	gethostname(hostname, sizeof(hostname));
 
@@ -19,12 +22,6 @@ chatServer::chatServer() {
 	inet_ntop(AF_INET, &ipv4->sin_addr, ipAddr, INET_ADDRSTRLEN); //Convert
 
 	std::cout << "HostName:" << hostname << "\nIPAddress: " << ipAddr << "\n\nLet's setup the server\n";
-
-	Setup(); 
-}
-
-//Gets the details from the user on the initial setup
-void chatServer::Setup() {
 
 	int input = SETUP_ERROR;
 
@@ -47,7 +44,7 @@ void chatServer::Setup() {
 		std::cout << "\nWhat is the user capacity for this server? ";
 		std::cin >> capacity;
 
-		input = ClientHandler.checkCapacity(capacity);
+		input = ClientHandler->checkCapacity(capacity);
 
 		if (input == CAPACITY_REACHED) {
 			std::printf("\nUnfortunately, the max capacity is %d, please try again.\n", MAX_CAPACITY);
@@ -75,25 +72,50 @@ void chatServer::Setup() {
 				input = SUCCESS;
 			}
 
-			else 
+			else
 				continue;
-			
+
 		}
 
 	}
 
-	std::cout << "\nServer has been Setup, see configuration below:" << std::endl;
+	std::cout << "\nServer has been Setup, see configuration below:\n" << std::endl;
 	std::cout << "Hostname: " << hostname << std::endl;
 	std::cout << "IP Address: " << ipAddr << std::endl;
 	std::cout << "Port: " << port << std::endl;
 	std::cout << "Capacity: " << capacity << std::endl;
 	std::cout << "Command Char: " << commandChar << std::endl;
-
 }
 
-int chatServer::init(uint16_t _port) {
 
-	return 0;
+//initialize the server
+int chatServer::init() {
+
+	lSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	if (lSocket == INVALID_SOCKET)
+		return SETUP_ERROR;
+
+	//Bind
+	cAddr.sin_family = AF_INET;					//set family of addresses
+	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	//take any IP	
+	cAddr.sin_port = htons(port);				//convert for TCP/IP
+
+	if (bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)) == SOCKET_ERROR) {	//Try to bind
+		return BIND_ERROR;
+	}
+
+	//Listen
+	if (listen(lSocket, capacity) == SOCKET_ERROR) {
+		return SETUP_ERROR;
+	}
+
+	socketList.push_back(lSocket);
+	FD_ZERO(&readySet);
+	FD_ZERO(&masterSet);
+
+	return SUCCESS;
+
 }
 
 //verifies selected port
@@ -111,7 +133,6 @@ int chatServer::checkPort(uint16_t _port) {
 //verifies commandCharacter
 int chatServer::checkCommandChar(char _character) {
 
-	
 	for (char _char : validChars) {
 
 		if (_character == _char) {
@@ -122,4 +143,27 @@ int chatServer::checkCommandChar(char _character) {
 
 	return SETUP_ERROR;
 
+}
+
+//This is the loop we are using to handle communication between clients
+bool chatServer::run() {
+
+	//ClientHandler->handleClients(lSocket);
+
+	select(0, &readySet, NULL, NULL, NULL);
+
+	for (SOCKET socket : socketList) {
+
+		if (socket == lSocket) {
+
+			SOCKET comSocket = accept(lSocket, NULL, NULL);
+
+			socketList.push_back(comSocket);
+			
+		}
+
+	}
+
+
+	return true;
 }

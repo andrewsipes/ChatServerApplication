@@ -1,2 +1,6 @@
 ﻿  chatServer.cpp
+  main.cpp
+  clientHandler.cpp
+  user.cpp
+  Generating Code...
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe
