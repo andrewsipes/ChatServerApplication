@@ -98,16 +98,16 @@ int chatServer::init() {
 		return SETUP_ERROR;
 
 	//Bind
-	cAddr.sin_family = AF_INET;					//set family of addresses
-	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	//take any IP	
-	cAddr.sin_port = htons(port);				//convert for TCP/IP
+	cAddr.sin_family = AF_INET;					
+	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	
+	cAddr.sin_port = htons(port);				
 
-	if (bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)) == SOCKET_ERROR) {	//Try to bind
+	if (bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)) == SOCKET_ERROR) {
 		return BIND_ERROR;
 	}
 
 	//Listen
-	if (listen(lSocket, 5) == SOCKET_ERROR) {
+	if (listen(lSocket, capacity + 1) == SOCKET_ERROR) {
 		return SETUP_ERROR;
 	}
 

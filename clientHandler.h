@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_CAPACITY 10
+#define MAX_CAPACITY 4
 
 #include <WinSock2.h>
 #include "messageHandler.h"
@@ -9,6 +9,7 @@
 class clientHandler
 {
 	messageHandler message;
+	
 
 public:
 
