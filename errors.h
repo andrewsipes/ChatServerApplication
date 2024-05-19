@@ -23,3 +23,8 @@
 #define NOT_LOGGED_IN 21
 #define INTERNAL_ERROR 22
 #define SETUP_ERROR -1
+
+//These are just used for returns for determining which command was sent
+#define HELP_SCREEN 100
+#define REGISTER 101
+

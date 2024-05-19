@@ -3,14 +3,10 @@
 
 clientHandler::clientHandler(messageHandler& _messageHandler) {
 
-	message = _messageHandler;
+	mh = _messageHandler;
 
 }
 
-void clientHandler::handleClients(SOCKET& lSocket)
-{
-
-}
 
 //Takes in Capacity and Verifies if we are in the limit
 int clientHandler::checkCapacity(int _clients)
@@ -21,4 +17,12 @@ int clientHandler::checkCapacity(int _clients)
 
 	else
 		return SUCCESS;
+}
+
+//add a user to the vector
+int clientHandler::registerUser(char& _user, char& _pass) {
+	user newUser(&_user, &_pass);
+	clients.push_back(newUser);
+
+	return SUCCESS;
 }

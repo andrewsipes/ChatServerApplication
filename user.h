@@ -4,7 +4,12 @@
 
 class user
 {
-	char username[255];
-	char password[255];
+	char* username;
+	char* password;
+
+public:
+
+	user(char* _username, char* _password);
+	~user();
 };
 

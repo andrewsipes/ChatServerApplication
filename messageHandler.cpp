@@ -1,6 +1,8 @@
 #include "messageHandler.h"
 #include <iostream>
+#include <string.h>
 #include "errors.h"
+
 
 messageHandler::messageHandler() {
 	commandChar = '~';
@@ -8,34 +10,30 @@ messageHandler::messageHandler() {
 messageHandler::messageHandler(const char _commandChar){
 
 	commandChar = _commandChar;
-	char* help = new char[6] {commandChar, 'h', 'e', 'l', 'p', '\0' };
-	commandStrings.push_back(help);
+	//original way
+	//char* help = new char[6] {commandChar, 'h', 'e', 'l', 'p', '\0' };
+	//commandStrings.push_back(help);
+
+	std::stringstream ssHelp; ssHelp << commandChar << "help";
+	const char* help = stringToChar(ssHelp);
+	commandStrings.push_back((char*)help);
+
+	std::stringstream ssReg; ssReg << commandChar << "register";
+	const char* reg = stringToChar(ssReg);
+	commandStrings.push_back((char*)reg);
+
 }
-void messageHandler::handleMessage(SOCKET _socket, char* _data) {
+int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 
 	//help
-	if (compareChar(_data, commandStrings[0], strlen(commandStrings[0]))) {
-		std::stringstream ss1;
-		ss1 << "\n\n" << commandChar << "help\tProvides list of commands available\n" <<
-			"\n" << commandChar << "register\t<username> <password>\nRegisters a user to the server\n" <<
-			"\n" << commandChar << "login\t<username> <password>\nlogs a user into the chat server\n" <<
-			"\n" << commandChar << "logout\tlogs a user out of the chat server\n\0";
+	if (compareChar(_data, commandStrings[help], strlen(commandStrings[help]))) {
+		helpScreen(_socket);
+		return HELP_SCREEN;
+	}
 
-		std::stringstream ss2;
-
-		ss2 << "\n" << commandChar << "getlist\t provides list of active clients\n" <<
-			"\n" << commandChar << "send\t<username> <message>\nsends a message to client (255 char limit)\n" <<
-			"\n" << commandChar << "send\t<message>\nsends a message all connnected clients\n\0";
-
-		std::stringstream ss3;
-
-		ss3 <<	"\n" << commandChar << "getlog\t<username>\nretrieves logs for a specific user\n" <<
-			"\n" << commandChar << "getlog\tpublic\nretrieves public logs\n\0";
-
-		stringConvertSend(ss1, _socket);
-		stringConvertSend(ss2, _socket);
-		stringConvertSend(ss3, _socket);
-
+	//register
+	else if (compareChar(_data, commandStrings[reg], strlen(commandStrings[reg]))) {
+		return REGISTER;		
 	}
 }
 int messageHandler::tcpSend(SOCKET _socket, const char* _data, int16_t _length) {
@@ -138,6 +136,54 @@ int messageHandler::readMessage(SOCKET _socket, char* buffer, int32_t size)
 
 	return received;
 }
+void messageHandler::helpScreen(SOCKET _socket) {
+	std::stringstream ss1;
+	ss1 << "\n\n" << commandChar << "help\tProvides list of commands available\n" <<
+		"\n" << commandChar << "register\t<username> <password>\nRegisters a user to the server\n" <<
+		"\n" << commandChar << "login\t<username> <password>\nlogs a user into the chat server\n" <<
+		"\n" << commandChar << "logout\tlogs a user out of the chat server\n\0";
+
+	std::stringstream ss2;
+
+	ss2 << "\n" << commandChar << "getlist\t provides list of active clients\n" <<
+		"\n" << commandChar << "send\t<username> <message>\nsends a message to client (255 char limit)\n" <<
+		"\n" << commandChar << "send\t<message>\nsends a message all connnected clients\n\0";
+
+	std::stringstream ss3;
+
+	ss3 << "\n" << commandChar << "getlog\t<username>\nretrieves logs for a specific user\n" <<
+		"\n" << commandChar << "getlog\tpublic\nretrieves public logs\n\0";
+
+	stringConvertSend(ss1, _socket);
+	stringConvertSend(ss2, _socket);
+	stringConvertSend(ss3, _socket);
+}
+void messageHandler::registerUser(SOCKET _socket, char* _data) {
+
+	int* last = new int;
+
+	//disregard the command so we can get the username then the password
+	char* user = (char*)extractUntilSpace(_data, strlen(commandStrings[1])+1, *last);
+	char* pass = (char*)extractUntilSpace(_data, *last+1, *last);
+
+}
+const char* messageHandler::extractUntilSpace(char* _data, int startingElement, int& lastChar) {
+	std::stringstream ss;
+
+	for (int i = startingElement; i < strlen(_data); i++) {
+
+		if (_data[i] == ' '){
+			lastChar = i;
+			break;
+		}
+
+		ss << _data[i];
+	
+	}
+
+	const char* returnChar = stringToChar(ss);
+	return returnChar;
+}
 bool messageHandler::compareChar(const char* _char1, const char* _char2, int length) {
 	for (int i = 0; i < length; i++) {
 		if (_char1[i] != _char2[i]) {
@@ -152,6 +198,23 @@ int messageHandler::stringConvertSend(std::stringstream& ss, SOCKET _socket) {
 	const char* message = convertToString.c_str();
 	int result = sendMessage(_socket, message, 255);
 	return result;
+}
+const char* messageHandler::stringToChar(std::stringstream& ss) {
+
+	std::string convertToString = ss.str();
+	char* message = new char[convertToString.size() + 1];
+	std::memcpy(message, convertToString.c_str(), convertToString.size());
+	message[convertToString.size()] = '\0';
+	return message;
+}
+std::string messageHandler::charToString(char* _char) {
+	std::stringstream ss;
+
+	for (int i = 0; i < strlen(_char); i++) {
+		ss << _char[i];
+	}
+
+	return ss.str();
 }
 messageHandler::~messageHandler() {
 

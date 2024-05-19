@@ -8,15 +8,14 @@
 
 class clientHandler
 {
-	messageHandler message;
+	messageHandler mh;
 	
 
 public:
 
 	std::vector<user> clients;
-	std::vector<SOCKET> clientSockets;
 	int checkCapacity(int _clients);
+	int registerUser(char& username, char& password);
 	clientHandler(messageHandler& _messageHandler);
-	void handleClients(SOCKET& lSocket);
 };
 

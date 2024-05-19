@@ -165,10 +165,7 @@ bool chatServer::run() {
 		ss << "Welcome to the Chat Server!\nPlease use ' " << commandChar << " ' followed by a command to get started." <<
 			"For example, to get list of commands, enter: " << commandChar << "help";
 
-		std::string welcome = ss.str();
-		const char* welcomeChar = welcome.c_str();
-
-		sendMessage(newSocket, welcomeChar, 255);
+		MessageHandler->stringConvertSend(ss, newSocket);
 
 	}
 	
@@ -179,7 +176,25 @@ bool chatServer::run() {
 			readMessage(socket, buffer, 255);
 
 			if (buffer[0] == commandChar) {
-				MessageHandler->handleMessage(socket, buffer);
+				int result = MessageHandler->handleMessage(socket, buffer);
+
+				if (result == REGISTER) {
+					int* last = new int;
+
+					//disregard the command so we can get the username then the password
+					char* user = (char*)MessageHandler->extractUntilSpace(buffer, strlen(MessageHandler->commandStrings[reg]) + 1, *last);
+					char* pass = (char*)MessageHandler->extractUntilSpace(buffer, *last + 1, *last);
+					std::string userstr = MessageHandler->charToString(user);
+					std::string pwstr = MessageHandler->charToString(pass);
+					result = ClientHandler->registerUser(*user, *pass); //add some error checking here
+
+					switch (result) {
+						case SUCCESS:
+							std::stringstream ss;
+							ss << "Congratulations! " << userstr << " is now registered with password: " << pwstr;
+							MessageHandler->stringConvertSend(ss, socket);
+					}
+				}
 			}
 
 		}
