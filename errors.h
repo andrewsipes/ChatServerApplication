@@ -1,5 +1,8 @@
 #pragma once
 
+#define MAX_CHAR_LENGTH 255
+#define MAX_UNPW_CHAR_LENGTH 20
+
 #define SUCCESS 0
 #define SHUTDOWN 1
 #define DISCONNECT 2

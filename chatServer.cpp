@@ -49,6 +49,10 @@ chatServer::chatServer() {
 			continue;
 		}
 
+		else if (input == SETUP_ERROR) {
+			std::printf("\nYou must set capacity between 1-4 clients");
+		}
+
 	}
 
 	input = SETUP_ERROR;
@@ -184,15 +188,20 @@ bool chatServer::run() {
 					//disregard the command so we can get the username then the password
 					char* user = (char*)MessageHandler->extractUntilSpace(buffer, strlen(MessageHandler->commandStrings[reg]) + 1, *last);
 					char* pass = (char*)MessageHandler->extractUntilSpace(buffer, *last + 1, *last);
+
 					std::string userstr = MessageHandler->charToString(user);
 					std::string pwstr = MessageHandler->charToString(pass);
 					result = ClientHandler->registerUser(*user, *pass); //add some error checking here
-
+					std::stringstream ss;
 					switch (result) {
 						case SUCCESS:
-							std::stringstream ss;
 							ss << "Congratulations! " << userstr << " is now registered with password: " << pwstr;
 							MessageHandler->stringConvertSend(ss, socket);
+							break;
+						case CHAR_LIMIT_REACHED:
+							ss << "\nYour Username and Password combination is too long. Please shorten your credentials and try again.\n";
+							MessageHandler->stringConvertSend(ss, socket);
+							break;
 					}
 				}
 			}
