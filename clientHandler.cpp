@@ -37,7 +37,18 @@ int clientHandler::registerUser(char& _user, char& _pass) {
 		return CHAR_LIMIT_REACHED;
 	}
 
-	user newUser(&_user, &_pass);
+	else {
+		for (user client : clients) {
+			if (mh.compareChar(mh.stringToChar(client.username), &_user, strlen(&_user)))
+				return ALREADY_REGISTERED;
+		}	
+	}
+
+	std::string userStr, passStr;
+	userStr = mh.charToString(&_user);
+	passStr = mh.charToString(&_pass);
+
+	user newUser(userStr, passStr);
 	clients.push_back(newUser);
 
 	return SUCCESS;

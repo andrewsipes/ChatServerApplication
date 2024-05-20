@@ -1,15 +1,15 @@
 #pragma once
 
 #include "logger.h"
+#include <string>
 
 class user
 {
-	char* username;
-	char* password;
-
 public:
+	std::string username;
+	std::string password;
 
-	user(char* _username, char* _password);
+	user(std::string _username, std::string _password);
 	~user();
 };
 

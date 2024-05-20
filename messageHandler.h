@@ -23,9 +23,10 @@ public:
 	bool compareChar(const char* _char1, const char* _char2, int length);
 	int stringConvertSend(std::stringstream& ss, SOCKET _socket);
 	const char* stringToChar(std::stringstream& ss);
+	const char* stringToChar(std::string str);
 	std::string charToString(char* _char);
 	void helpScreen(SOCKET _socket);
-	void registerUser(SOCKET _socket, char* _data);
+	//void registerUser(SOCKET _socket, char* _data);
 	const char* extractUntilSpace(char* _data, int startingElement, int& lastChar);
 	~messageHandler();
 };

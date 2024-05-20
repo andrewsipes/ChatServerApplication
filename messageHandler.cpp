@@ -158,15 +158,15 @@ void messageHandler::helpScreen(SOCKET _socket) {
 	stringConvertSend(ss2, _socket);
 	stringConvertSend(ss3, _socket);
 }
-void messageHandler::registerUser(SOCKET _socket, char* _data) {
-
-	int* last = new int;
-
-	//disregard the command so we can get the username then the password
-	char* user = (char*)extractUntilSpace(_data, strlen(commandStrings[1])+1, *last);
-	char* pass = (char*)extractUntilSpace(_data, *last+1, *last);
-
-}
+//void messageHandler::registerUser(SOCKET _socket, char* _data) {
+//
+//	int* last = new int;
+//
+//	//disregard the command so we can get the username then the password
+//	char* user = (char*)extractUntilSpace(_data, strlen(commandStrings[1])+1, *last);
+//	char* pass = (char*)extractUntilSpace(_data, *last+1, *last);
+//
+//}
 const char* messageHandler::extractUntilSpace(char* _data, int startingElement, int& lastChar) {
 	std::stringstream ss;
 
@@ -202,6 +202,15 @@ int messageHandler::stringConvertSend(std::stringstream& ss, SOCKET _socket) {
 const char* messageHandler::stringToChar(std::stringstream& ss) {
 
 	std::string convertToString = ss.str();
+	char* message = new char[convertToString.size() + 1];
+	std::memcpy(message, convertToString.c_str(), convertToString.size());
+	message[convertToString.size()] = '\0';
+	return message;
+}
+
+const char* messageHandler::stringToChar(std::string str) {
+
+	std::string convertToString = str;
 	char* message = new char[convertToString.size() + 1];
 	std::memcpy(message, convertToString.c_str(), convertToString.size());
 	message[convertToString.size()] = '\0';

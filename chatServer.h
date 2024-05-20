@@ -44,5 +44,6 @@ private:
 	int sendMessage(SOCKET _socket, const char* data, int32_t length);
 	int tcpReceive(SOCKET _socket, char& _data, int _length);
 	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
+	void registerUser(SOCKET _socket, char* _buffer);
 };
 
