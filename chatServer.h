@@ -16,7 +16,8 @@ class chatServer
 	uint16_t port;
 	int capacity;
 	char hostname[1024];
-	char ipAddr[INET_ADDRSTRLEN];
+	char ipv4Addr[INET_ADDRSTRLEN];
+	char ipv6Addr[INET6_ADDRSTRLEN];
 	char commandChar;
 	
 	clientHandler* ClientHandler;

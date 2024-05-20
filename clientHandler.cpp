@@ -33,7 +33,7 @@ int clientHandler::registerUser(char& _user, char& _pass) {
 		return PARAMETER_ERROR;
 	}
 
-	else if (strlen(&_user) > MAX_UNPW_CHAR_LENGTH || strlen(&_pass) > MAX_UNPW_CHAR_LENGTH) {
+	else if (userLength > MAX_UNPW_CHAR_LENGTH || passLength > MAX_UNPW_CHAR_LENGTH) {
 		return CHAR_LIMIT_REACHED;
 	}
 

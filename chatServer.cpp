@@ -12,14 +12,22 @@ chatServer::chatServer() {
 	gethostname(hostname, sizeof(hostname));
 
 	//IP Address	
-	struct addrinfo aInfo, *result;
-	memset(&aInfo, 0, sizeof(aInfo));
-	aInfo.ai_family = AF_INET;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
-	getaddrinfo(hostname, NULL, &aInfo, &result);
+	struct addrinfo a4Info, *result;
+	memset(&a4Info, 0, sizeof(a4Info));
+	a4Info.ai_family = AF_INET;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
+	getaddrinfo(hostname, NULL, &a4Info, &result);
 	struct sockaddr_in* ipv4 = (sockaddr_in*)(result->ai_addr);
-	inet_ntop(AF_INET, &ipv4->sin_addr, ipAddr, INET_ADDRSTRLEN); //Convert
+	inet_ntop(AF_INET, &ipv4->sin_addr, ipv4Addr, INET_ADDRSTRLEN); //Convert
 
-	std::cout << "HostName:" << hostname << "\nIPAddress: " << ipAddr << "\n\nLet's setup the server\n";
+	//IP Address	
+	struct addrinfo a6Info;
+	memset(&a6Info, 0, sizeof(a6Info));
+	a6Info.ai_family = AF_INET6;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
+	getaddrinfo(hostname, NULL, &a6Info, &result);
+	struct sockaddr_in6* ipv6 = (sockaddr_in6*)(result->ai_addr);
+	inet_ntop(AF_INET6, &ipv6->sin6_addr, ipv6Addr, INET6_ADDRSTRLEN); //Convert
+
+	std::cout << "HostName:" << hostname << "\nIPv4 Address: " << ipv4Addr << "\nIPv6 Address: "<< ipv6Addr << "\n\nLet's setup the server\n";
 
 	int input = SETUP_ERROR;
 
@@ -83,7 +91,8 @@ chatServer::chatServer() {
 
 	std::cout << "\nServer has been Setup, see configuration below:\n" << std::endl;
 	std::cout << "Hostname: " << hostname << std::endl;
-	std::cout << "IP Address: " << ipAddr << std::endl;
+	std::cout << "IPv4 Address: " << ipv4Addr << std::endl;
+	std::cout << "IPv6 Address: " << ipv6Addr << std::endl;
 	std::cout << "Port: " << port << std::endl;
 	std::cout << "Capacity: " << capacity << std::endl;
 	std::cout << "Command Char: " << commandChar << std::endl;
@@ -318,13 +327,15 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 		MessageHandler->stringConvertSend(ss, _socket);
 		break;
 	case PARAMETER_ERROR:
-		ss << "\nYou didn't enter a username or password, Please try again\n";
-		MessageHandler->stringConvertSend(ss, _socket);
+		errorVerbose(result);
+		//ss << "\nYou didn't enter a username or password, Please try again\n";
+		//MessageHandler->stringConvertSend(ss, _socket);
 		break;
 	case ALREADY_REGISTERED:
 		ss << "\nThis user is already registered, Please Try again\n";
 		MessageHandler->stringConvertSend(ss, _socket);
 		break;
+
 	}
 }
 
