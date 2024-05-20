@@ -193,15 +193,20 @@ bool chatServer::run() {
 					std::string pwstr = MessageHandler->charToString(pass);
 					result = ClientHandler->registerUser(*user, *pass); //add some error checking here
 					std::stringstream ss;
+
 					switch (result) {
 						case SUCCESS:
 							ss << "Congratulations! " << userstr << " is now registered with password: " << pwstr;
 							MessageHandler->stringConvertSend(ss, socket);
 							break;
 						case CHAR_LIMIT_REACHED:
-							ss << "\nYour Username and Password combination is too long. Please shorten your credentials and try again.\n";
+							ss << "\nYour Username or Password is too long. The limit is 20 characters each, please try again.\n";
 							MessageHandler->stringConvertSend(ss, socket);
 							break;
+
+						case PARAMETER_ERROR:
+							ss << "\nYou didn't enter a username or password, Please try again\n";
+							MessageHandler->stringConvertSend(ss, socket);
 					}
 				}
 			}

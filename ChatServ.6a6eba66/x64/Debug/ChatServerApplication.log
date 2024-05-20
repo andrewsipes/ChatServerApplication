@@ -1,7 +1,3 @@
 ﻿  chatServer.cpp
 C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(189,112): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  clientHandler.cpp
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(29,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(30,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe

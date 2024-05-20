@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:errors.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:clientHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:errors.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -29,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:clientHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -62,7 +62,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 138,
+          "DockedWidth": 171,
           "SelectedChildIndex": 6,
           "Children": [
             {
@@ -103,25 +103,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 3,
               "Title": "messageHandler.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp",
               "RelativeDocumentMoniker": "messageHandler.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp",
               "RelativeToolTip": "messageHandler.cpp",
-              "ViewState": "AQIAADcAAAAAAAAAAAAqwNUAAAAPAAAA",
+              "ViewState": "AQIAACUAAAAAAAAAAAAawKAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-18T15:33:43.899Z"
+              "WhenOpened": "2024-05-18T15:33:43.899Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "clientHandler.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp",
               "RelativeDocumentMoniker": "clientHandler.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp",
               "RelativeToolTip": "clientHandler.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAACAAAA",
+              "ViewState": "AQIAABEAAAAAAAAAAAAawCEAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-18T00:08:19.021Z",
               "EditorCaption": ""
@@ -177,12 +178,12 @@
           ]
         },
         {
-          "DockedWidth": 262,
-          "SelectedChildIndex": 1,
+          "DockedWidth": 229,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "user.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp",
               "RelativeDocumentMoniker": "user.cpp",
@@ -190,25 +191,24 @@
               "RelativeToolTip": "user.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-19T23:17:18.007Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-19T23:17:18.007Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "chatServer.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp",
               "RelativeDocumentMoniker": "chatServer.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp",
               "RelativeToolTip": "chatServer.cpp",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAADEAAAADAAAA",
+              "ViewState": "AQIAAJYAAAAAAAAAAAAqwNMAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-17T23:39:29.143Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "messageHandler.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h",
               "RelativeDocumentMoniker": "messageHandler.h",
@@ -216,12 +216,11 @@
               "RelativeToolTip": "messageHandler.h",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-17T23:38:43.423Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-17T23:38:43.423Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "clientHandler.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.h",
               "RelativeDocumentMoniker": "clientHandler.h",
@@ -233,20 +232,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "errors.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h",
               "RelativeDocumentMoniker": "errors.h",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h",
               "RelativeToolTip": "errors.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAASAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-18T00:06:06.466Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "chatServer.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.h",
               "RelativeDocumentMoniker": "chatServer.h",
@@ -254,8 +253,7 @@
               "RelativeToolTip": "chatServer.h",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-17T23:38:13.294Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-17T23:38:13.294Z"
             }
           ]
         }

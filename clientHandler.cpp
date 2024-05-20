@@ -29,7 +29,11 @@ int clientHandler::registerUser(char& _user, char& _pass) {
 	int userLength = strlen(&_user);
 	int passLength = strlen(&_pass);
 
-	if (strlen(&_user) > MAX_UNPW_CHAR_LENGTH || strlen(&_pass) > MAX_UNPW_CHAR_LENGTH) {
+	if (_user == '\0' || _pass == '\0') {
+		return PARAMETER_ERROR;
+	}
+
+	else if (strlen(&_user) > MAX_UNPW_CHAR_LENGTH || strlen(&_pass) > MAX_UNPW_CHAR_LENGTH) {
 		return CHAR_LIMIT_REACHED;
 	}
 
