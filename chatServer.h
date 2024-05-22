@@ -22,6 +22,8 @@ class chatServer
 	
 	clientHandler* ClientHandler;
 	messageHandler* MessageHandler;
+	logger log;
+	std::string logStr;
    
 	SOCKET lSocket;
 	sockaddr_in cAddr; //Empty Address for clients connecting

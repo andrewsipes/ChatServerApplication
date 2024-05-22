@@ -1,0 +1,7 @@
+﻿  logger.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\andre\Desktop\ChatServerApplication\messageHandler.cpp(38): warning C4715: 'messageHandler::handleMessage': not all control paths return a value
+  All 426 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Release\ChatServerApplication.exe

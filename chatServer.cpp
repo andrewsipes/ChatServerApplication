@@ -26,76 +26,95 @@ chatServer::chatServer() {
 	getaddrinfo(hostname, NULL, &a6Info, &result);
 	struct sockaddr_in6* ipv6 = (sockaddr_in6*)(result->ai_addr);
 	inet_ntop(AF_INET6, &ipv6->sin6_addr, ipv6Addr, INET6_ADDRSTRLEN); //Convert
-
-	std::cout << "HostName:" << hostname << "\nIPv4 Address: " << ipv4Addr << "\nIPv6 Address: "<< ipv6Addr << "\n\nLet's setup the server\n";
+	log.logEntry(logStr = "\nHostName:" + MessageHandler->charToString(hostname) + "\nIPv4 Address: " + ipv4Addr + "\nIPv6 Address: " + ipv6Addr + "\n\nLet's setup the server\n");
 
 	int input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
 		std::cin.clear();
-		std::cout << "\nWhat port should the server listen on? ";
+		log.logEntry(logStr = "\nWhat port should the server listen on? ");
 		std::cin >> port;
+		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(port));
 
 		input = checkPort(port);
 		if (input == INCORRECT_PORT) {
-			std::cout << "\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again\n";
-			continue;
+			log.logEntry(logStr = "\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again");
 		}
+
+		else if (input == SUCCESS) {
+			log.logEntry(logStr = "Port " + std::to_string(port) + " will be used\n");
+		}
+		std::cin.clear();
+		std::cin.ignore();
 	}
 
 	input = SETUP_ERROR;
-
+	
 	while (input != SUCCESS) {
-		std::cin.clear();
-		std::cout << "\nWhat is the user capacity for this server? ";
+	
+		log.logEntry(logStr = "\nWhat is the user capacity for this server? ");
 		std::cin >> capacity;
+		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(capacity));
 
 		input = ClientHandler->checkCapacity(capacity);
 
 		if (input == CAPACITY_REACHED) {
-			std::printf("\nUnfortunately, the max capacity is %d, please try again.\n", MAX_CAPACITY);
-			continue;
+			log.logEntry(logStr ="Unfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.");
+
 		}
 
 		else if (input == SETUP_ERROR) {
-			std::printf("\nYou must set capacity between 1-4 clients");
+			log.logEntry(logStr = "\nYou must set capacity between 1-4 clients");
 		}
+
+		else if (input == SUCCESS) {
+			log.logEntry(logStr = "Capacity is set at " + std::to_string(capacity) + " clients.");
+		}
+
+		std::cin.clear();
+		std::cin.ignore();
 
 	}
 
 	input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
-		std::cin.clear();
-		std::cout << "\nPlease choose one of the following command characters (default is ~): ~, @, #, $ : ";
+		log.logEntry(logStr = "\n\nPlease choose one of the following command characters(default is ~) : ~, @, #, $ : ");
 
 		std::cin >> commandChar;
 		input = checkCommandChar(commandChar);
+		log.logEntryNoVerbose("\nUser Entered: " + commandChar);
 
 		if (input != SUCCESS) {
-			std::cout << "\nYou did not enter a valid character, would like to use the default? Yes or No. ";
+			log.logEntry(logStr = "\nYou did not enter a valid character, would like to use the default? Yes or No. ");
 
 			std::string response; std::cin >> response;
+			log.logEntryNoVerbose("\nUser Entered: " + response);
 
 			if (response == "Yes" || response == "yes" || response == "y" || response == "Y") {
 				commandChar = DEFAULT_COMMAND_CHAR;
 				input = SUCCESS;
 			}
 
-			else
-				continue;
+			else if (input == SUCCESS) {
+				log.logEntry(logStr = std::to_string(commandChar) + " will be the command character");
+			}
 
 		}
 
+		std::cin.clear();
+		std::cin.ignore();
 	}
+	system("CLS");
+	log.logEntry(logStr = "\nServer has been Setup, see configuration below:");
+	log.logEntry(logStr = "\nHostname: " + MessageHandler->charToString(hostname));
+	log.logEntry(logStr = "\nIPv4 Address: " + MessageHandler->charToString(ipv4Addr));
+	log.logEntry(logStr = "\nIPv6 Address: " + MessageHandler->charToString(ipv6Addr));
+	log.logEntry(logStr = "\nPort: " + std::to_string(port));
+	log.logEntry(logStr = "\nCapacity: " + std::to_string(capacity));
+	log.logEntry(logStr = "\nCommand Char: " + commandChar);
+	log.logEntry(logStr = "\nWaiting for connections...");
 
-	std::cout << "\nServer has been Setup, see configuration below:\n" << std::endl;
-	std::cout << "Hostname: " << hostname << std::endl;
-	std::cout << "IPv4 Address: " << ipv4Addr << std::endl;
-	std::cout << "IPv6 Address: " << ipv6Addr << std::endl;
-	std::cout << "Port: " << port << std::endl;
-	std::cout << "Capacity: " << capacity << std::endl;
-	std::cout << "Command Char: " << commandChar << std::endl;
 }
 
 
