@@ -26,23 +26,23 @@ chatServer::chatServer() {
 	getaddrinfo(hostname, NULL, &a6Info, &result);
 	struct sockaddr_in6* ipv6 = (sockaddr_in6*)(result->ai_addr);
 	inet_ntop(AF_INET6, &ipv6->sin6_addr, ipv6Addr, INET6_ADDRSTRLEN); //Convert
-	log.logEntry(logStr = "\nHostName:" + MessageHandler->charToString(hostname) + "\nIPv4 Address: " + ipv4Addr + "\nIPv6 Address: " + ipv6Addr + "\n\nLet's setup the server\n");
+	log.logEntry("\nHostName:" + MessageHandler->charToString(hostname) + "\nIPv4 Address: " + ipv4Addr + "\nIPv6 Address: " + ipv6Addr + "\n\nLet's setup the server\n");
 
 	int input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
 		std::cin.clear();
-		log.logEntry(logStr = "\nWhat port should the server listen on? ");
+		log.logEntry("\nWhat port should the server listen on? ");
 		std::cin >> port;
 		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(port));
 
 		input = checkPort(port);
 		if (input == INCORRECT_PORT) {
-			log.logEntry(logStr = "\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again");
+			log.logEntry("\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again");
 		}
 
 		else if (input == SUCCESS) {
-			log.logEntry(logStr = "Port " + std::to_string(port) + " will be used\n");
+			log.logEntry("Port " + std::to_string(port) + " will be used\n");
 		}
 		std::cin.clear();
 		std::cin.ignore();
@@ -52,23 +52,23 @@ chatServer::chatServer() {
 	
 	while (input != SUCCESS) {
 	
-		log.logEntry(logStr = "\nWhat is the user capacity for this server? ");
+		log.logEntry("\nWhat is the user capacity for this server? ");
 		std::cin >> capacity;
 		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(capacity));
 
 		input = ClientHandler->checkCapacity(capacity);
 
 		if (input == CAPACITY_REACHED) {
-			log.logEntry(logStr ="Unfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.");
+			log.logEntry("Unfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.");
 
 		}
 
 		else if (input == SETUP_ERROR) {
-			log.logEntry(logStr = "\nYou must set capacity between 1-4 clients");
+			log.logEntry("\nYou must set capacity between 1-4 clients");
 		}
 
 		else if (input == SUCCESS) {
-			log.logEntry(logStr = "Capacity is set at " + std::to_string(capacity) + " clients.");
+			log.logEntry("Capacity is set at " + std::to_string(capacity) + " clients.");
 		}
 
 		std::cin.clear();
@@ -79,14 +79,14 @@ chatServer::chatServer() {
 	input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
-		log.logEntry(logStr = "\n\nPlease choose one of the following command characters(default is ~) : ~, @, #, $ : ");
+		log.logEntry("\n\nPlease choose one of the following command characters(default is ~) : ~, @, #, $ : ");
 
 		std::cin >> commandChar;
 		input = checkCommandChar(commandChar);
-		log.logEntryNoVerbose("\nUser Entered: " + commandChar);
+		log.logEntryNoVerbose("\nUser Entered: " + MessageHandler->charToString(&commandChar));
 
 		if (input != SUCCESS) {
-			log.logEntry(logStr = "\nYou did not enter a valid character, would like to use the default? Yes or No. ");
+			log.logEntry("\nYou did not enter a valid character, would like to use the default? Yes or No. ");
 
 			std::string response; std::cin >> response;
 			log.logEntryNoVerbose("\nUser Entered: " + response);
@@ -97,7 +97,7 @@ chatServer::chatServer() {
 			}
 
 			else if (input == SUCCESS) {
-				log.logEntry(logStr = std::to_string(commandChar) + " will be the command character");
+				log.logEntry(MessageHandler->charToString(&commandChar) + " will be the command character");
 			}
 
 		}
@@ -106,17 +106,16 @@ chatServer::chatServer() {
 		std::cin.ignore();
 	}
 	system("CLS");
-	log.logEntry(logStr = "\nServer has been Setup, see configuration below:");
-	log.logEntry(logStr = "\nHostname: " + MessageHandler->charToString(hostname));
-	log.logEntry(logStr = "\nIPv4 Address: " + MessageHandler->charToString(ipv4Addr));
-	log.logEntry(logStr = "\nIPv6 Address: " + MessageHandler->charToString(ipv6Addr));
-	log.logEntry(logStr = "\nPort: " + std::to_string(port));
-	log.logEntry(logStr = "\nCapacity: " + std::to_string(capacity));
-	log.logEntry(logStr = "\nCommand Char: " + commandChar);
-	log.logEntry(logStr = "\nWaiting for connections...");
+	log.logEntry("\nServer has been Setup, see configuration below:");
+	log.logEntry("\nHostname: " + MessageHandler->charToString(hostname));
+	log.logEntry("\nIPv4 Address: " + MessageHandler->charToString(ipv4Addr));
+	log.logEntry("\nIPv6 Address : " + MessageHandler->charToString(ipv6Addr));
+	log.logEntry("\nPort: " + std::to_string(port));
+	log.logEntry("\nCapacity: " + std::to_string(capacity));
+	log.logEntry("\nCommand Char: " + MessageHandler->charToString(&commandChar));
+	log.logEntry("\nWaiting for connections...");
 
 }
-
 
 //initialize the server
 int chatServer::init() {
@@ -125,26 +124,33 @@ int chatServer::init() {
 	ClientHandler = new clientHandler(*MessageHandler);
 
 	lSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	log.logEntryNoVerbose("\nCreating Listening Socket...");
 	
-	if (lSocket == INVALID_SOCKET)
+	if (lSocket == INVALID_SOCKET) {
+		log.logEntry(errorVerbose(lSocket));
 		return SETUP_ERROR;
+	}
 
 	//Bind
 	cAddr.sin_family = AF_INET;					
 	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	
 	cAddr.sin_port = htons(port);				
-
-	if (bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)) == SOCKET_ERROR) {
+	int result = bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)); 
+	if (result == SOCKET_ERROR) {
+		log.logEntry(errorVerbose(BIND_ERROR));
 		return BIND_ERROR;
 	}
 
 	//Listen
 	if (listen(lSocket, capacity + 1) == SOCKET_ERROR) {
+		log.logEntry(errorVerbose(SETUP_ERROR));
 		return SETUP_ERROR;
 	}
 
 	FD_ZERO(&masterSet);
+	log.logEntryNoVerbose("\nZeroing Master Set...");
 	FD_SET(lSocket, &masterSet);
+	log.logEntryNoVerbose("\nAdding Listening Socket to MasterSet..");
 	socketList.push_back(lSocket);
 	
 	return SUCCESS;
@@ -154,13 +160,15 @@ int chatServer::init() {
 //verifies selected port
 int chatServer::checkPort(uint16_t _port) {
 	if (_port < 0 || (_port >= 0 && _port <= 1023) || (_port >= 49152 && _port <= 65535)) {
-
+		log.logEntryNoVerbose(errorVerbose(INCORRECT_PORT));
 		return INCORRECT_PORT;			// 0-1023 are common ports
 										// 49152 - 65535 are dynamic ports
 	}
 
-	else 
+	else {
+		log.logEntryNoVerbose("\nValid Port Entered");
 		return SUCCESS;
+	}
 }
 
 //verifies commandCharacter
@@ -169,11 +177,12 @@ int chatServer::checkCommandChar(char _character) {
 	for (char _char : validChars) {
 
 		if (_character == _char) {
+			log.logEntryNoVerbose("\nValid Char Entered");
 			return SUCCESS;
 		}
 
 	}
-
+	log.logEntryNoVerbose(errorVerbose(SETUP_ERROR));
 	return SETUP_ERROR;
 
 }
@@ -192,6 +201,8 @@ bool chatServer::run() {
 		socketList.push_back(newSocket);
 		FD_SET(newSocket, &masterSet);
 
+		log.logEntry("\nClient " + std::to_string(newSocket) + " has connected...");
+
 		std::stringstream ss;
 		ss << "Welcome to the Chat Server!\nPlease use ' " << commandChar << " ' followed by a command to get started." <<
 			"For example, to get list of commands, enter: " << commandChar << "help";
@@ -199,6 +210,9 @@ bool chatServer::run() {
 		MessageHandler->stringConvertSend(ss, newSocket);
 
 	}
+	//Create two separate log files: one for user
+	//commands and another for public messages
+	//(excluding direct messages or DMs).
 	
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
@@ -209,9 +223,26 @@ bool chatServer::run() {
 			if (buffer[0] == commandChar) {
 				int result = MessageHandler->handleMessage(socket, buffer);
 
-				if (result == REGISTER) {					
-					registerUser(socket, buffer);
+				//only log commands from user - need to exclude for direct messages
+				for (user client : ClientHandler->clients) {
+					if (client.socket == socket) {
+						client.log.logEntryNoVerbose(client.username + ": " + MessageHandler->charToString(buffer));
+					}
 				}
+
+				switch (result) {
+				case HELP_SCREEN:
+					break;
+				case REGISTER:
+					registerUser(socket, buffer);
+					break;
+				case LOGIN:
+					break;
+				case MESSAGE:
+					break;
+				
+				}
+				
 			}
 
 		}
@@ -228,11 +259,15 @@ int chatServer::readMessage(SOCKET _socket, char* buffer, int32_t size)
 
 	if (received == SOCKET_ERROR || received == 0) {
 
-		if (WSAGetLastError() == WSAESHUTDOWN)
+		if (WSAGetLastError() == WSAESHUTDOWN) {
+			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
+		}
 
-		else
+		else {
+			
 			return DISCONNECT;
+		}
 	}
 
 	if (message > size) {
@@ -243,11 +278,14 @@ int chatServer::readMessage(SOCKET _socket, char* buffer, int32_t size)
 
 	if (received == SOCKET_ERROR || received == 0) {
 
-		if (WSAGetLastError() == WSAESHUTDOWN)
+		if (WSAGetLastError() == WSAESHUTDOWN) {
+			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
+		}
 
-		else
+		else {
 			return DISCONNECT;
+		}
 	}
 
 	return received;
@@ -274,8 +312,10 @@ int chatServer::tcpReceive(SOCKET _socket, char& _data, int _length) {
 
 int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 {
-	if (length < 0 || length > 255)
+	if (length < 0 || length > 255) {
+		log.logEntryNoVerbose(errorVerbose(PARAMETER_ERROR));
 		return PARAMETER_ERROR;
+	}
 
 	uint8_t message = length;
 
@@ -283,8 +323,10 @@ int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 
 		int lastError = WSAGetLastError();
 
-		if (lastError == WSAESHUTDOWN)
+		if (lastError == WSAESHUTDOWN) {
+			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
+		}
 
 		else
 			return DISCONNECT;
@@ -296,8 +338,10 @@ int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 
 		int lastError = WSAGetLastError();
 
-		if (lastError == WSAESHUTDOWN)
+		if (lastError == WSAESHUTDOWN) {
+			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
+		}
 
 		else
 			return DISCONNECT;
@@ -333,7 +377,7 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 
 	std::string userstr = MessageHandler->charToString(user);
 	std::string pwstr = MessageHandler->charToString(pass);
-	int result = ClientHandler->registerUser(*user, *pass); //add some error checking here
+	int result = ClientHandler->registerUser(*user, *pass, _socket); //add some error checking here
 	std::stringstream ss;
 
 	switch (result) {
@@ -347,8 +391,6 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 		break;
 	case PARAMETER_ERROR:
 		errorVerbose(result);
-		//ss << "\nYou didn't enter a username or password, Please try again\n";
-		//MessageHandler->stringConvertSend(ss, _socket);
 		break;
 	case ALREADY_REGISTERED:
 		ss << "\nThis user is already registered, Please Try again\n";
@@ -358,85 +400,63 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	}
 }
 
-void chatServer::errorVerbose(int error) {
-
+std::string chatServer::errorVerbose(int error) {
 	if (error != SUCCESS) {
-
 		switch (error) {
-
 		case SHUTDOWN:
-			std::cout << "ERROR: SHUTDOWN";
-			break;
+			return "\nERROR: SHUTDOWN";
 		case DISCONNECT:
-			std::cout << "ERROR: DISCONNECT";
-			break;
+			return "\nERROR: DISCONNECT";
 		case BIND_ERROR:
-			std::cout << "ERROR: BIND_ERROR";
-			break;
+			return "\nERROR: BIND_ERROR";
 		case CONNECT_ERROR:
-			std::cout << "ERROR: CONNECT_ERROR";
-			break;
+			return "\nERROR: CONNECT_ERROR";
 		case STARTUP_ERROR:
-			std::cout << "ERROR: STARTUP_ERROR";
-			break;
+			return "\nERROR: STARTUP_ERROR";
 		case ADDRESS_ERROR:
-			std::cout << "ERROR: ADDRESS_ERROR";
-			break;
+			return "\nERROR: ADDRESS_ERROR";
 		case PARAMETER_ERROR:
-			std::cout << "ERROR: PARAMETER_ERROR";
-			break;
+			return "\nERROR: PARAMETER_ERROR";
 		case MESSAGE_ERROR:
-			std::cout << "ERROR: MESSAGE_ERROR";
-			break;
-		case CLIENT_DISCONNCTED:
-			std::cout << "ERROR: CLIENT_DISCONNCTED";
-			break;
+			return "\nERROR: MESSAGE_ERROR";
+		case CLIENT_DISCONNECTED:
+			return "\nERROR: CLIENT_DISCONNECTED";
 		case INCORRECT_UN_OR_PW:
-			std::cout << "ERROR: INCORRECT_UN_OR_PW";
-			break;
+			return "\nERROR: INCORRECT_UN_OR_PW";
 		case ALREADY_REGISTERED:
-			std::cout << "ERROR: ALREADY_REGISTERED";
-			break;
+			return "\nERROR: ALREADY_REGISTERED";
 		case REGISTRATION_FAILED:
-			std::cout << "ERROR: REGISTRATION_FAILED";
-			break;
+			return "\nERROR: REGISTRATION_FAILED";
 		case FAILED_TO_SEND:
-			std::cout << "ERROR: FAILED_TO_SEND";
-			break;
+			return "\nERROR: FAILED_TO_SEND";
 		case CHAR_LIMIT_REACHED:
-			std::cout << "ERROR: CHAR_LIMIT_REACHED";
-			break;
+			return "\nERROR: CHAR_LIMIT_REACHED";
 		case LOG_RETRIEVAL_FAILED:
-			std::cout << "ERROR: LOG_RETRIEVAL_FAILED";
-			break;
+			return "\nERROR: LOG_RETRIEVAL_FAILED";
 		case INCORRECT_COMMAND:
-			std::cout << "ERROR: INCORRECT_COMMAND";
-			break;
+			return "\nERROR: INCORRECT_COMMAND";
 		case INCORRECT_PORT:
-			std::cout << "ERROR: INCORRECT_PORT";
-			break;
+			return "\nERROR: INCORRECT_PORT";
 		case CAPACITY_REACHED:
-			std::cout << "ERROR: CAPACITY_REACHED";
-			break;
+			return "\nERROR: CAPACITY_REACHED";
 		case INCORRECT_IP:
-			std::cout << "ERROR: INCORRECT_IP";
-			break;
+			return "\nERROR: INCORRECT_IP";
 		case NOT_LOGGED_IN:
-			std::cout << "ERROR: NOT_LOGGED_IN";
-			break;
+			return "\nERROR: NOT_LOGGED_IN";
 		case INTERNAL_ERROR:
-			std::cout << "ERROR: INTERNAL_ERROR";
-			break;
+			return "\nERROR: INTERNAL_ERROR";
 		case SETUP_ERROR:
-			std::cout << "ERROR: SETUP_ERROR";
-			break;
+			return "\nERROR: SETUP_ERROR";
 		default:
-			std::cout << "Unknown error";
-			break;
+			return "\nERROR: Unknown error";
 		}
-
-		std::cout << "\n";
 	}
+}
+
+void chatServer::logUserMessage(std::string _str, user _user, logger& _log) {
+	_str = _user.username + ": " + _str;
+	_log.logEntryNoVerbose(_str);
+	_user.log.logEntryNoVerbose(_str);
 }
 
 chatServer::~chatServer() {

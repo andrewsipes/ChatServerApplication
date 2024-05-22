@@ -14,8 +14,9 @@ class clientHandler
 public:
 
 	std::vector<user> clients;
+
 	int checkCapacity(int _clients);
-	int registerUser(char& username, char& password);
+	int registerUser(char& username, char& password, SOCKET _socket);
 	clientHandler(messageHandler& _messageHandler);
 };
 

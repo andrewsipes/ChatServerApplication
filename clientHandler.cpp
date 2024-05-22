@@ -24,7 +24,7 @@ int clientHandler::checkCapacity(int _clients)
 }
 
 //add a user to the vector
-int clientHandler::registerUser(char& _user, char& _pass) {
+int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 
 	int userLength = strlen(&_user);
 	int passLength = strlen(&_pass);
@@ -48,7 +48,7 @@ int clientHandler::registerUser(char& _user, char& _pass) {
 	userStr = mh.charToString(&_user);
 	passStr = mh.charToString(&_pass);
 
-	user newUser(userStr, passStr);
+	user newUser(userStr, passStr, _socket);
 	clients.push_back(newUser);
 
 	return SUCCESS;

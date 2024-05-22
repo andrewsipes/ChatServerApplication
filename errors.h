@@ -12,7 +12,7 @@
 #define ADDRESS_ERROR 7
 #define PARAMETER_ERROR 8
 #define MESSAGE_ERROR 9
-#define CLIENT_DISCONNCTED 10
+#define CLIENT_DISCONNECTED 10
 #define INCORRECT_UN_OR_PW 11
 #define ALREADY_REGISTERED 12
 #define REGISTRATION_FAILED 13
@@ -30,4 +30,6 @@
 //These are just used for returns for determining which command was sent
 #define HELP_SCREEN 100
 #define REGISTER 101
+#define LOGIN 102
+#define MESSAGE 103
 

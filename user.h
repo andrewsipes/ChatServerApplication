@@ -2,14 +2,17 @@
 
 #include "logger.h"
 #include <string>
+#include <winsock2.h>
 
 class user
 {
 public:
 	std::string username;
 	std::string password;
+	logger log;
+	SOCKET socket;
 
-	user(std::string _username, std::string _password);
+	user(std::string _username, std::string _password, SOCKET _socket);
 	~user();
 };
 

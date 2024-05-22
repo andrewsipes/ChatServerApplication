@@ -12,5 +12,6 @@ public:
 	void logEntryNoVerbose(std::string _logString);
 
 
+
 };
 

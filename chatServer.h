@@ -23,6 +23,7 @@ class chatServer
 	clientHandler* ClientHandler;
 	messageHandler* MessageHandler;
 	logger log;
+	logger publiclog; //only for public messages
 	std::string logStr;
    
 	SOCKET lSocket;
@@ -37,7 +38,7 @@ public:
 	~chatServer();
 	int init();
 	bool run();
-	void errorVerbose(int error);
+	std::string errorVerbose(int error);
 
 private:
 
@@ -48,5 +49,6 @@ private:
 	int tcpReceive(SOCKET _socket, char& _data, int _length);
 	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
 	void registerUser(SOCKET _socket, char* _buffer);
+	void logUserMessage(std::string _str, user _user, logger& _log);
 };
 
