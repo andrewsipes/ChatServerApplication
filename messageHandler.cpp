@@ -10,9 +10,6 @@ messageHandler::messageHandler() {
 messageHandler::messageHandler(const char _commandChar){
 
 	commandChar = _commandChar;
-	//original way
-	//char* help = new char[6] {commandChar, 'h', 'e', 'l', 'p', '\0' };
-	//commandStrings.push_back(help);
 
 	std::stringstream ssHelp; ssHelp << commandChar << "help";
 	const char* help = stringToChar(ssHelp);
@@ -160,28 +157,6 @@ int messageHandler::readMessage(SOCKET _socket, char* buffer, int32_t size)
 
 	return received;
 }
-//void messageHandler::helpScreen(SOCKET _socket) {
-//	std::stringstream ss1;
-//	ss1 << "\n\n" << commandChar << "help\tProvides list of commands available\n" <<
-//		"\n" << commandChar << "register\t<username> <password>\nRegisters a user to the server\n" <<
-//		"\n" << commandChar << "login\t<username> <password>\nlogs a user into the chat server\n" <<
-//		"\n" << commandChar << "logout\tlogs a user out of the chat server\n\0";
-//
-//	std::stringstream ss2;
-//
-//	ss2 << "\n" << commandChar << "getlist\t provides list of active clients\n" <<
-//		"\n" << commandChar << "send\t<username> <message>\nsends a message to client (255 char limit)\n" <<
-//		"\n" << commandChar << "send\t<message>\nsends a message all connnected clients\n\0";
-//
-//	std::stringstream ss3;
-//
-//	ss3 << "\n" << commandChar << "getlog\t<username>\nretrieves logs for a specific user\n" <<
-//		"\n" << commandChar << "getlog\tpublic\nretrieves public logs\n\0";
-//
-//	stringConvertSend(ss1, _socket);
-//	stringConvertSend(ss2, _socket);
-//	stringConvertSend(ss3, _socket);
-//}
 const char* messageHandler::extractUntilSpace(char* _data, int startingElement, int& lastChar) {
 	std::stringstream ss;
 

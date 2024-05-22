@@ -27,7 +27,6 @@ public:
 	const char* stringToChar(std::stringstream& ss);
 	const char* stringToChar(std::string str);
 	std::string charToString(char* _char);
-	//void helpScreen(SOCKET _socket, bool _clientFound);
 	const char* extractUntilSpace(char* _data, int startingElement, int& lastChar);
 	~messageHandler();
 };

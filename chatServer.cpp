@@ -240,6 +240,7 @@ bool chatServer::run() {
 						registerUser(socket, buffer);
 						break;
 					case LOGIN:
+						loginUser(socket, buffer);
 						break;
 					case MESSAGE:
 						break;
@@ -375,6 +376,7 @@ int chatServer::tcpSend(SOCKET _socket, const char* _data, int16_t _length) {
 	return sent;
 }
 
+//register user logic
 void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	int* last = new int;
 
@@ -485,6 +487,43 @@ void chatServer::helpScreen(SOCKET _socket) {
 		MessageHandler->stringConvertSend(str1, _socket);
 		MessageHandler->stringConvertSend(str2, _socket);
 		MessageHandler->stringConvertSend(str3, _socket);
+}
+
+void chatServer::loginUser(SOCKET _socket, char* _buffer) {
+
+	int* last = new int;
+
+	//disregard the command so we can get the username then the password
+	char* user = (char*)MessageHandler->extractUntilSpace(_buffer, strlen(MessageHandler->commandStrings[login]) + 1, *last);
+	char* pass = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
+
+	std::string userstr = MessageHandler->charToString(user);
+	std::string pwstr = MessageHandler->charToString(pass);
+	int result = ClientHandler->authenticateUser(*user, *pass, _socket); //add some error checking here
+
+	switch (result) {
+	case SUCCESS:
+		logStr = +"\nWelcome " + userstr + "!";
+		ClientHandler->getClient(_socket)->connected = true;
+		ClientHandler->getClient(_socket)->log.logEntryNoVerbose("\nUser Authenticated Successfully");
+		break;
+	case CHAR_LIMIT_REACHED:
+		logStr = "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
+		break;
+	case PARAMETER_ERROR:
+		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax";
+		break;
+	case ALREADY_CONNECTED:
+		logStr = userstr + " is already logged in. Unable to authenticate.";
+		break;
+	case INCORRECT_UN_OR_PW:
+		logStr = "\nIncorrect Username or Password, Please try again.";
+		break;
+	}
+
+	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
+	MessageHandler->stringConvertSend(logStr, _socket);
+
 }
 
 //Sends client a message saying their syntax was wrong

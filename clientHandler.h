@@ -19,5 +19,7 @@ public:
 	int registerUser(char& username, char& password, SOCKET _socket);
 	user* getClient(SOCKET _socket);
 	clientHandler(messageHandler& _messageHandler);
+	int authenticateUser(char& _user, char& _pass, SOCKET _socket);
+	~clientHandler();
 };
 

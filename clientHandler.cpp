@@ -64,6 +64,37 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	return SUCCESS;
 }
 
+int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
+
+	int userLength = strlen(&_user);
+	int passLength = strlen(&_pass);
+
+	if (_user == '\0' || _pass == '\0') {
+		return PARAMETER_ERROR;
+	}
+
+	else if (userLength > MAX_UNPW_CHAR_LENGTH || passLength > MAX_UNPW_CHAR_LENGTH) {
+		return CHAR_LIMIT_REACHED;
+	}
+
+	else {
+		for (user* client : clients) {
+			if (mh.compareChar(mh.stringToChar(client->username), &_user, strlen(&_user))) {
+				
+				if (client->connected)
+					return ALREADY_CONNECTED;
+				
+				client->socket = _socket;
+				client->connected = true;
+			}
+			
+		}
+	}
+
+	return SUCCESS;
+}
+
+
 user* clientHandler::getClient(SOCKET _socket) {
 	for (user* client : clients) {
 		if (client->socket == _socket)
@@ -73,4 +104,11 @@ user* clientHandler::getClient(SOCKET _socket) {
 	user* newUser = new user(_socket);
 	clients.push_back(newUser);
 	return newUser;
+}
+
+clientHandler::~clientHandler(){
+
+	for (user* client : clients) {
+		delete client;
+	}
 }

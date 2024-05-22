@@ -24,8 +24,10 @@
 #define CAPACITY_REACHED 19
 #define INCORRECT_IP 20
 #define NOT_LOGGED_IN 21
-#define INTERNAL_ERROR 22
+#define ALREADY_CONNECTED 22
+#define INTERNAL_ERROR 23
 #define SETUP_ERROR -1
+
 
 //These are just used for returns for determining which command was sent
 #define HELP_SCREEN 100

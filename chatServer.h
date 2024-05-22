@@ -53,5 +53,6 @@ private:
 	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
 	void commandError(SOCKET _socket);
 	void registerUser(SOCKET _socket, char* _buffer);
+	void loginUser(SOCKET _socket, char* _buffer);
 };
 
