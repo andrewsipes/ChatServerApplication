@@ -5,7 +5,7 @@ user::user(std::string _username, std::string _password, SOCKET _socket) {
 	password = _password;
 
 	if (_socket != 0) {
-		socket = socket;
+		socket = _socket;
 	}
 }
 
