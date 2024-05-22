@@ -23,6 +23,10 @@ messageHandler::messageHandler(const char _commandChar){
 	const char* login = stringToChar(ssLogin);
 	commandStrings.push_back((char*)login);
 
+	std::stringstream ssLogout; ssLogout << commandChar << "logout";
+	const char* logout = stringToChar(ssLogout);
+	commandStrings.push_back((char*)logout);
+
 }
 int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 
@@ -52,6 +56,17 @@ int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 	else if (compareChar(_data, commandStrings[login], strlen(commandStrings[login]))) {
 		return LOGIN;
 	}
+
+	//logout
+	else if (compareChar(_data, commandStrings[logout], strlen(commandStrings[logout]))) {
+
+		if (strlen(_data) != strlen(commandStrings[logout])) {
+			return INCORRECT_COMMAND;
+		}
+		
+		return LOGOUT;
+	}
+
 
 	else {
 		return INCORRECT_COMMAND;

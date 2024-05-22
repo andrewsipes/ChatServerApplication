@@ -3,16 +3,29 @@
   "WorkspaceRootPath": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:clientHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:user.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:chatServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\throw_bad_alloc.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\ENTERPRISE\\VC\\TOOLS\\MSVC\\14.39.33519\\INCLUDE\\XSTRING||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector||{3B902123-F8A7-4915-9F01-361F908088D0}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -27,12 +40,8 @@
       "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:clientHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:messageHandler.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|solutionrelative:user.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6A6EBA66-3B1C-4749-B363-B05394FEBD9C}|ChatServerApplication.vcxproj|C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -57,9 +66,6 @@
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\delete_scalar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector||{3B902123-F8A7-4915-9F01-361F908088D0}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
@@ -69,7 +75,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 144,
+          "DockedWidth": 334,
           "SelectedChildIndex": 3,
           "Children": [
             {
@@ -86,81 +92,72 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "clientHandler.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp",
               "RelativeDocumentMoniker": "clientHandler.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.cpp",
               "RelativeToolTip": "clientHandler.cpp",
-              "ViewState": "AQIAAAoAAAAAAAAAAAAAAEQAAAAAAAAA",
+              "ViewState": "AQIAAEoAAAAAAAAAAAAmwGAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-18T00:08:19.021Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
+              "Title": "throw_bad_alloc.cpp",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\throw_bad_alloc.cpp",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\throw_bad_alloc.cpp",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\throw_bad_alloc.cpp",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\throw_bad_alloc.cpp",
+              "ViewState": "AQIAABEAAAAAAAAAAADgvyMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-22T19:18:25.988Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "xstring",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\xstring",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\xstring",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\xstring",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\xstring",
+              "ViewState": "AQIAAAUJAAAAAAAAAAAlwBcJAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-05-22T19:18:11.283Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "vector",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
+              "ViewState": "AQIAAGEHAAAAAAAAAAAlwGQHAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-05-18T20:48:04.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "chatServer.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.h",
               "RelativeDocumentMoniker": "chatServer.h",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.h",
               "RelativeToolTip": "chatServer.h",
-              "ViewState": "AQIAACQAAAAAAAAAAAASwDgAAAAAAAAA",
+              "ViewState": "AQIAACQAAAAAAAAAAAASwDgAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-17T23:38:13.294Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\main.cpp",
-              "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\main.cpp",
-              "RelativeToolTip": "main.cpp",
-              "ViewState": "AQIAAAMAAAAAAAAAAADwvxEAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-17T23:36:05.31Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "logger.cpp",
-              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.cpp",
-              "RelativeDocumentMoniker": "logger.cpp",
-              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.cpp",
-              "RelativeToolTip": "logger.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-21T23:59:20.393Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "logger.h",
-              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.h",
-              "RelativeDocumentMoniker": "logger.h",
-              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.h",
-              "RelativeToolTip": "logger.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-17T23:39:07.465Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "iosfwd",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
-              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-18T20:00:59.478Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
               "Title": "cmath",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\cmath",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\cmath",
@@ -172,7 +169,55 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "iosfwd",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\iosfwd",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-05-18T20:00:59.478Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "logger.h",
+              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.h",
+              "RelativeDocumentMoniker": "logger.h",
+              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.h",
+              "RelativeToolTip": "logger.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-17T23:39:07.465Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "logger.cpp",
+              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.cpp",
+              "RelativeDocumentMoniker": "logger.cpp",
+              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\logger.cpp",
+              "RelativeToolTip": "logger.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-21T23:59:20.393Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AQIAAAMAAAAAAAAAAADwvxEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-17T23:36:05.31Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "delete_scalar.cpp",
               "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\delete_scalar.cpp",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\crt\\src\\vcruntime\\delete_scalar.cpp",
@@ -181,67 +226,29 @@
               "ViewState": "AQIAABkAAAAAAAAAAAAswCUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-20T12:54:00.507Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "vector",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
-              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.39.33519\\include\\vector",
-              "ViewState": "AQIAAFsHAAAAAAAAAAAUwGQHAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-18T20:48:04.812Z"
             }
           ]
         },
         {
-          "DockedWidth": 256,
-          "SelectedChildIndex": 2,
+          "DockedWidth": 66,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "user.h",
-              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h",
-              "RelativeDocumentMoniker": "user.h",
-              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h",
-              "RelativeToolTip": "user.h",
-              "ViewState": "AQIAAAcAAAAAAAAAAAAgwA8AAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-17T23:38:55.788Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "user.cpp",
-              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp",
-              "RelativeDocumentMoniker": "user.cpp",
-              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp",
-              "RelativeToolTip": "user.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-19T23:17:18.007Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "chatServer.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp",
               "RelativeDocumentMoniker": "chatServer.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\chatServer.cpp",
               "RelativeToolTip": "chatServer.cpp",
-              "ViewState": "AQIAANoAAAAAAAAAAAAmwPIAAAAAAAAA",
+              "ViewState": "AQIAANIAAAAAAAAAAAAmwN0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-17T23:39:29.143Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "clientHandler.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\clientHandler.h",
               "RelativeDocumentMoniker": "clientHandler.h",
@@ -254,39 +261,63 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "messageHandler.cpp",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp",
               "RelativeDocumentMoniker": "messageHandler.cpp",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.cpp",
               "RelativeToolTip": "messageHandler.cpp",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAsAAAAcAAAA",
+              "ViewState": "AQIAAEgAAAAAAAAAAAAAACEAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-05-18T15:33:43.899Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
+              "Title": "user.cpp",
+              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp",
+              "RelativeDocumentMoniker": "user.cpp",
+              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.cpp",
+              "RelativeToolTip": "user.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-19T23:17:18.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "user.h",
+              "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h",
+              "RelativeDocumentMoniker": "user.h",
+              "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\user.h",
+              "RelativeToolTip": "user.h",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAgwA8AAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-17T23:38:55.788Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "messageHandler.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h",
               "RelativeDocumentMoniker": "messageHandler.h",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\messageHandler.h",
               "RelativeToolTip": "messageHandler.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABwAAAAnAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-17T23:38:43.423Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "errors.h",
               "DocumentMoniker": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h",
               "RelativeDocumentMoniker": "errors.h",
               "ToolTip": "C:\\Users\\andre\\Desktop\\ChatServerApplication\\errors.h",
               "RelativeToolTip": "errors.h",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAA8AAAAaAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACQAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-05-18T00:06:06.466Z",
               "EditorCaption": ""

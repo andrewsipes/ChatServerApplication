@@ -33,5 +33,6 @@
 #define HELP_SCREEN 100
 #define REGISTER 101
 #define LOGIN 102
-#define MESSAGE 103
+#define LOGOUT 103
+#define MESSAGE 104
 

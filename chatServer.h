@@ -54,5 +54,6 @@ private:
 	void commandError(SOCKET _socket);
 	void registerUser(SOCKET _socket, char* _buffer);
 	void loginUser(SOCKET _socket, char* _buffer);
+	void logoutUser(SOCKET _socket, char* _buffer);
 };
 

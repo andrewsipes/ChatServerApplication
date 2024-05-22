@@ -47,7 +47,7 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	userStr = mh.charToString(&_user);
 	passStr = mh.charToString(&_pass);
 
-	bool foundEmptyUser = false;
+	/*bool foundEmptyUser = false;
 	for (user* client : clients) {
 		if (client->socket == _socket && client->username == "") {
 			client->username = userStr;
@@ -56,10 +56,10 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 		}
 	}
 
-	if (!foundEmptyUser) {
-		user* newUser = new user(userStr, passStr, _socket);
+	if (!foundEmptyUser) {*/
+		user* newUser = new user(userStr, passStr, 0);
 		clients.push_back(newUser);
-	}
+	//}
 
 	return SUCCESS;
 }
@@ -80,17 +80,39 @@ int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
 	else {
 		for (user* client : clients) {
 			if (mh.compareChar(mh.stringToChar(client->username), &_user, strlen(&_user))) {
-				
+
+				//authenticated
 				if (client->connected)
 					return ALREADY_CONNECTED;
-				
-				client->socket = _socket;
-				client->connected = true;
-			}
-			
-		}
-	}
 
+				//now we need to update which socket the user is on
+				for (user* clientSocket : clients) {
+					if (clientSocket->socket == _socket) {
+						clientSocket->username = client->username;
+						clientSocket->password = client->password;
+
+						for (auto iter = clients.begin(); iter != clients.end(); ++iter) {
+
+							user* dupClient = *iter;
+
+							//if we find the a duplicate of the user (stale entry or from registration) remove it
+							if (dupClient->username == clientSocket->username
+								&& dupClient->socket != clientSocket->socket) {
+
+								clients.erase(iter);
+								break;
+							}
+
+						}
+				
+						break;
+					}
+				}
+			}
+		}
+
+
+	}
 	return SUCCESS;
 }
 

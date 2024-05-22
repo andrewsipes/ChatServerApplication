@@ -7,6 +7,7 @@ enum commands {
 	help = 0,
 	reg,
 	login,
+	logout,
 };
 class messageHandler
 {

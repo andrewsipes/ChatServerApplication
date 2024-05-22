@@ -242,6 +242,8 @@ bool chatServer::run() {
 					case LOGIN:
 						loginUser(socket, buffer);
 						break;
+					case LOGOUT:
+						logoutUser(socket, buffer);
 					case MESSAGE:
 						break;
 					case INCORRECT_COMMAND:
@@ -489,6 +491,7 @@ void chatServer::helpScreen(SOCKET _socket) {
 		MessageHandler->stringConvertSend(str3, _socket);
 }
 
+//login logic
 void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 
 	int* last = new int;
@@ -523,6 +526,32 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 
 	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
 	MessageHandler->stringConvertSend(logStr, _socket);
+
+}
+
+//logout logic
+void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
+
+	int logStrLength = strlen(MessageHandler->commandStrings[logout]);
+
+	if (ClientHandler->getClient(_socket)->connected = false) {
+		logStr = "\nYou are not logged in.";
+		MessageHandler->stringConvertSend(logStr, _socket);
+		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
+		MessageHandler->stringConvertSend(logStr, _socket);
+	}
+
+	else if (MessageHandler->compareChar(_buffer, MessageHandler->commandStrings[logout], logStrLength)
+	&&	strlen(_buffer) == logStrLength) {
+		logStr = "\nYou successfully logged out.";
+		ClientHandler->getClient(_socket)->connected = false;
+		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
+		MessageHandler->stringConvertSend(logStr, _socket);
+	}
+
+	else {
+		commandError(_socket);
+	}
 
 }
 
