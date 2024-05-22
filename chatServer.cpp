@@ -203,11 +203,18 @@ bool chatServer::run() {
 
 		log.logEntry("\nClient " + std::to_string(newSocket) + " has connected...");
 
-		std::stringstream ss;
-		ss << "Welcome to the Chat Server!\nPlease use ' " << commandChar << " ' followed by a command to get started." <<
-			"For example, to get list of commands, enter: " << commandChar << "help";
+		user* client = ClientHandler->getClient(newSocket);
 
-		MessageHandler->stringConvertSend(ss, newSocket);
+		std::string command = MessageHandler->charToString(&commandChar);
+		logStr = "Welcome to the Chat Server!\nPlease use ' " + command + " ' followed by a command to get started." +
+			"For example, to get list of commands, enter: " + command + "help";
+
+		/*std::stringstream ss;
+		ss << "Welcome to the Chat Server!\nPlease use ' " << commandChar << " ' followed by a command to get started." <<
+			"For example, to get list of commands, enter: " << commandChar << "help";*/
+
+		client->log.logEntryNoVerbose(logStr);
+		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
 	//Create two separate log files: one for user
@@ -223,15 +230,9 @@ bool chatServer::run() {
 			if (buffer[0] == commandChar) {
 				int result = MessageHandler->handleMessage(socket, buffer);
 
-				//only log commands from user - need to exclude for direct messages
-				for (user client : ClientHandler->clients) {
-					if (client.socket == socket) {
-						client.log.logEntryNoVerbose(client.username + ": " + MessageHandler->charToString(buffer));
-					}
-				}
-
 				switch (result) {
 				case HELP_SCREEN:
+					helpScreen(socket);
 					break;
 				case REGISTER:
 					registerUser(socket, buffer);
@@ -239,6 +240,8 @@ bool chatServer::run() {
 				case LOGIN:
 					break;
 				case MESSAGE:
+					break;
+				case INCORRECT_COMMAND:
 					break;
 				
 				}
@@ -459,8 +462,45 @@ void chatServer::logUserMessage(std::string _str, user _user, logger& _log) {
 	_user.log.logEntryNoVerbose(_str);
 }
 
+void chatServer::helpScreen(SOCKET _socket) {
+	std::string command = MessageHandler->charToString(&commandChar);
+
+	std::string str1 =
+	 "\n\n" + command + "help\tProvides list of commands available\n" +
+		"\n" + command + "register\t<username> <password>\nRegisters a user to the server\n" +
+		"\n" + command + "login\t<username> <password>\nlogs a user into the chat server\n" +
+		"\n" + command + "logout\tlogs a user out of the chat server\n\0";
+
+	std::string str2 =
+		"\n" + command + "getlist\t provides list of active clients\n" +
+		"\n" + command + "send\t<username> <message>\nsends a message to client (255 char limit)\n" +
+		"\n" + command + "send\t<message>\nsends a message all connnected clients\n\0";
+
+	std::string str3=
+		"\n" + command + "getlog\t<username>\nretrieves logs for a specific user\n" +
+		"\n" + command + "getlog\tpublic\nretrieves public logs\n\0";
+
+
+	////See if Client matches up
+	//for (user client : ClientHandler->clients) {
+	//	if (client.socket == _socket) {
+	//		client.log.logEntryNoVerbose(str1 + str2 + str3);
+	//	}
+	//}
+
+		user* user = ClientHandler->getClient(_socket);
+		user->log.logEntryNoVerbose(str1 + str2 + str3);
+
+		MessageHandler->stringConvertSend(str1, _socket);
+		MessageHandler->stringConvertSend(str2, _socket);
+		MessageHandler->stringConvertSend(str3, _socket);
+}
+
+
 chatServer::~chatServer() {
 	delete ClientHandler;
 	delete MessageHandler;
 }
+
+
 

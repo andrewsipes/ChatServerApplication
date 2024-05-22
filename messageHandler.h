@@ -6,6 +6,7 @@
 enum commands {
 	help = 0,
 	reg,
+	login,
 };
 class messageHandler
 {
@@ -22,11 +23,11 @@ public:
 	int tcpReceive(SOCKET _socket, char& _data, int _length);
 	bool compareChar(const char* _char1, const char* _char2, int length);
 	int stringConvertSend(std::stringstream& ss, SOCKET _socket);
+	int stringConvertSend(std::string _str, SOCKET _socket);
 	const char* stringToChar(std::stringstream& ss);
 	const char* stringToChar(std::string str);
 	std::string charToString(char* _char);
-	void helpScreen(SOCKET _socket);
-	//void registerUser(SOCKET _socket, char* _data);
+	//void helpScreen(SOCKET _socket, bool _clientFound);
 	const char* extractUntilSpace(char* _data, int startingElement, int& lastChar);
 	~messageHandler();
 };

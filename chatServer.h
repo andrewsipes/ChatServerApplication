@@ -42,6 +42,7 @@ public:
 
 private:
 
+	void helpScreen(SOCKET _socket);
 	int checkPort(uint16_t _port);
 	int checkCommandChar(char _character);
 	int readMessage(SOCKET _socket, char* buffer, int32_t size);

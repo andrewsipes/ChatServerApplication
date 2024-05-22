@@ -1,15 +1,7 @@
-﻿  chatServer.cpp
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(130,29): warning C4244: 'argument': conversion from 'SOCKET' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(372,109): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+﻿  main.cpp
   clientHandler.cpp
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(28,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(29,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(30,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(42,71): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  main.cpp
-  messageHandler.cpp
-C:\Users\andre\Desktop\ChatServerApplication\messageHandler.cpp(29,53): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\messageHandler.cpp(35,57): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(41,72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   Generating Code...
-C:\Users\andre\Desktop\ChatServerApplication\messageHandler.cpp(38,1): warning C4715: 'messageHandler::handleMessage': not all control paths return a value
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(451,1): warning C4715: 'chatServer::errorVerbose': not all control paths return a value
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe

@@ -13,6 +13,7 @@ public:
 	SOCKET socket;
 
 	user(std::string _username, std::string _password, SOCKET _socket);
+	user(SOCKET _socket);
 	~user();
 };
 

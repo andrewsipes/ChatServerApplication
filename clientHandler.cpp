@@ -7,7 +7,6 @@ clientHandler::clientHandler(messageHandler& _messageHandler) {
 
 }
 
-
 //Takes in Capacity and Verifies if we are in the limit
 int clientHandler::checkCapacity(int _clients)
 {
@@ -38,8 +37,8 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	}
 
 	else {
-		for (user client : clients) {
-			if (mh.compareChar(mh.stringToChar(client.username), &_user, strlen(&_user)))
+		for (user* client : clients) {
+			if (mh.compareChar(mh.stringToChar(client->username), &_user, strlen(&_user)))
 				return ALREADY_REGISTERED;
 		}	
 	}
@@ -48,8 +47,19 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	userStr = mh.charToString(&_user);
 	passStr = mh.charToString(&_pass);
 
-	user newUser(userStr, passStr, _socket);
+	user* newUser = new user(userStr, passStr, _socket);
 	clients.push_back(newUser);
 
 	return SUCCESS;
+}
+
+user* clientHandler::getClient(SOCKET _socket) {
+	for (user* client : clients) {
+		if (client->socket = _socket)
+			return client;
+	}
+
+	user* newUser = new user(_socket);
+	clients.push_back(newUser);
+	return newUser;
 }

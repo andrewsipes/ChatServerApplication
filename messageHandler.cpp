@@ -22,18 +22,42 @@ messageHandler::messageHandler(const char _commandChar){
 	const char* reg = stringToChar(ssReg);
 	commandStrings.push_back((char*)reg);
 
+	std::stringstream ssLogin; ssLogin << commandChar << "login";
+	const char* login = stringToChar(ssLogin);
+	commandStrings.push_back((char*)login);
+
 }
 int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 
 	//help
 	if (compareChar(_data, commandStrings[help], strlen(commandStrings[help]))) {
-		helpScreen(_socket);
+
+		int a;
+		if (strlen(extractUntilSpace(_data, 0, a)) != strlen(commandStrings[help])) {
+			return INCORRECT_COMMAND;
+		}
+
 		return HELP_SCREEN;
 	}
 
 	//register
 	else if (compareChar(_data, commandStrings[reg], strlen(commandStrings[reg]))) {
+
+		int a;
+		if (strlen(extractUntilSpace(_data, 0, a)) != strlen(commandStrings[reg])) {
+			return INCORRECT_COMMAND;
+		}
+
 		return REGISTER;		
+	}
+
+	//login
+	else if (compareChar(_data, commandStrings[login], strlen(commandStrings[login]))) {
+		return LOGIN;
+	}
+
+	else {
+		return INCORRECT_COMMAND;
 	}
 }
 int messageHandler::tcpSend(SOCKET _socket, const char* _data, int16_t _length) {
@@ -136,36 +160,27 @@ int messageHandler::readMessage(SOCKET _socket, char* buffer, int32_t size)
 
 	return received;
 }
-void messageHandler::helpScreen(SOCKET _socket) {
-	std::stringstream ss1;
-	ss1 << "\n\n" << commandChar << "help\tProvides list of commands available\n" <<
-		"\n" << commandChar << "register\t<username> <password>\nRegisters a user to the server\n" <<
-		"\n" << commandChar << "login\t<username> <password>\nlogs a user into the chat server\n" <<
-		"\n" << commandChar << "logout\tlogs a user out of the chat server\n\0";
-
-	std::stringstream ss2;
-
-	ss2 << "\n" << commandChar << "getlist\t provides list of active clients\n" <<
-		"\n" << commandChar << "send\t<username> <message>\nsends a message to client (255 char limit)\n" <<
-		"\n" << commandChar << "send\t<message>\nsends a message all connnected clients\n\0";
-
-	std::stringstream ss3;
-
-	ss3 << "\n" << commandChar << "getlog\t<username>\nretrieves logs for a specific user\n" <<
-		"\n" << commandChar << "getlog\tpublic\nretrieves public logs\n\0";
-
-	stringConvertSend(ss1, _socket);
-	stringConvertSend(ss2, _socket);
-	stringConvertSend(ss3, _socket);
-}
-//void messageHandler::registerUser(SOCKET _socket, char* _data) {
+//void messageHandler::helpScreen(SOCKET _socket) {
+//	std::stringstream ss1;
+//	ss1 << "\n\n" << commandChar << "help\tProvides list of commands available\n" <<
+//		"\n" << commandChar << "register\t<username> <password>\nRegisters a user to the server\n" <<
+//		"\n" << commandChar << "login\t<username> <password>\nlogs a user into the chat server\n" <<
+//		"\n" << commandChar << "logout\tlogs a user out of the chat server\n\0";
 //
-//	int* last = new int;
+//	std::stringstream ss2;
 //
-//	//disregard the command so we can get the username then the password
-//	char* user = (char*)extractUntilSpace(_data, strlen(commandStrings[1])+1, *last);
-//	char* pass = (char*)extractUntilSpace(_data, *last+1, *last);
+//	ss2 << "\n" << commandChar << "getlist\t provides list of active clients\n" <<
+//		"\n" << commandChar << "send\t<username> <message>\nsends a message to client (255 char limit)\n" <<
+//		"\n" << commandChar << "send\t<message>\nsends a message all connnected clients\n\0";
 //
+//	std::stringstream ss3;
+//
+//	ss3 << "\n" << commandChar << "getlog\t<username>\nretrieves logs for a specific user\n" <<
+//		"\n" << commandChar << "getlog\tpublic\nretrieves public logs\n\0";
+//
+//	stringConvertSend(ss1, _socket);
+//	stringConvertSend(ss2, _socket);
+//	stringConvertSend(ss3, _socket);
 //}
 const char* messageHandler::extractUntilSpace(char* _data, int startingElement, int& lastChar) {
 	std::stringstream ss;
@@ -195,6 +210,13 @@ bool messageHandler::compareChar(const char* _char1, const char* _char2, int len
 int messageHandler::stringConvertSend(std::stringstream& ss, SOCKET _socket) {
 
 	std::string convertToString = ss.str();
+	const char* message = convertToString.c_str();
+	int result = sendMessage(_socket, message, 255);
+	return result;
+}
+int messageHandler::stringConvertSend(std::string _str, SOCKET _socket) {
+
+	std::string convertToString = _str;
 	const char* message = convertToString.c_str();
 	int result = sendMessage(_socket, message, 255);
 	return result;
