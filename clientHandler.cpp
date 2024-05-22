@@ -47,15 +47,26 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	userStr = mh.charToString(&_user);
 	passStr = mh.charToString(&_pass);
 
-	user* newUser = new user(userStr, passStr, _socket);
-	clients.push_back(newUser);
+	bool foundEmptyUser = false;
+	for (user* client : clients) {
+		if (client->socket == _socket && client->username == "") {
+			client->username = userStr;
+			client->password = passStr;
+			foundEmptyUser = true;
+		}
+	}
+
+	if (!foundEmptyUser) {
+		user* newUser = new user(userStr, passStr, _socket);
+		clients.push_back(newUser);
+	}
 
 	return SUCCESS;
 }
 
 user* clientHandler::getClient(SOCKET _socket) {
 	for (user* client : clients) {
-		if (client->socket = _socket)
+		if (client->socket == _socket)
 			return client;
 	}
 

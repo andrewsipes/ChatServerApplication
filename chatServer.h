@@ -19,6 +19,8 @@ class chatServer
 	char ipv4Addr[INET_ADDRSTRLEN];
 	char ipv6Addr[INET6_ADDRSTRLEN];
 	char commandChar;
+	std::string commandStr;
+	char* buffer;
 	
 	clientHandler* ClientHandler;
 	messageHandler* MessageHandler;
@@ -49,7 +51,7 @@ private:
 	int sendMessage(SOCKET _socket, const char* data, int32_t length);
 	int tcpReceive(SOCKET _socket, char& _data, int _length);
 	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
+	void commandError(SOCKET _socket);
 	void registerUser(SOCKET _socket, char* _buffer);
-	void logUserMessage(std::string _str, user _user, logger& _log);
 };
 

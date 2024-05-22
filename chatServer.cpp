@@ -115,6 +115,9 @@ chatServer::chatServer() {
 	log.logEntry("\nCommand Char: " + MessageHandler->charToString(&commandChar));
 	log.logEntry("\nWaiting for connections...");
 
+	commandStr = MessageHandler->charToString(&commandChar);
+	buffer = new char[255];
+
 }
 
 //initialize the server
@@ -160,7 +163,7 @@ int chatServer::init() {
 //verifies selected port
 int chatServer::checkPort(uint16_t _port) {
 	if (_port < 0 || (_port >= 0 && _port <= 1023) || (_port >= 49152 && _port <= 65535)) {
-		log.logEntryNoVerbose(errorVerbose(INCORRECT_PORT));
+		log.logEntryNoVerbose("\n" + errorVerbose(INCORRECT_PORT));
 		return INCORRECT_PORT;			// 0-1023 are common ports
 										// 49152 - 65535 are dynamic ports
 	}
@@ -182,7 +185,7 @@ int chatServer::checkCommandChar(char _character) {
 		}
 
 	}
-	log.logEntryNoVerbose(errorVerbose(SETUP_ERROR));
+	log.logEntryNoVerbose("\n" + errorVerbose(SETUP_ERROR));
 	return SETUP_ERROR;
 
 }
@@ -205,15 +208,10 @@ bool chatServer::run() {
 
 		user* client = ClientHandler->getClient(newSocket);
 
-		std::string command = MessageHandler->charToString(&commandChar);
-		logStr = "Welcome to the Chat Server!\nPlease use ' " + command + " ' followed by a command to get started." +
-			"For example, to get list of commands, enter: " + command + "help";
+		logStr = "Welcome to the Chat Server!\nPlease use ' " + commandStr + " ' followed by a command to get started." +
+			"For example, to get list of commands, enter: " + commandStr + "help";
 
-		/*std::stringstream ss;
-		ss << "Welcome to the Chat Server!\nPlease use ' " << commandChar << " ' followed by a command to get started." <<
-			"For example, to get list of commands, enter: " << commandChar << "help";*/
-
-		client->log.logEntryNoVerbose(logStr);
+		client->log.logEntryNoVerbose("\n" + logStr);
 		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
@@ -223,29 +221,35 @@ bool chatServer::run() {
 	
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
-			char* buffer = new char[255];
-
+			
 			readMessage(socket, buffer, 255);
 
-			if (buffer[0] == commandChar) {
-				int result = MessageHandler->handleMessage(socket, buffer);
+			//don't log connection characters that are placed in the buffer
+			if (buffer[0] >= 32) {
+				//Add user into Vector of users, and log
+				ClientHandler->getClient(socket)->log.logEntryNoVerbose("\n" + MessageHandler->charToString(buffer));
 
-				switch (result) {
-				case HELP_SCREEN:
-					helpScreen(socket);
-					break;
-				case REGISTER:
-					registerUser(socket, buffer);
-					break;
-				case LOGIN:
-					break;
-				case MESSAGE:
-					break;
-				case INCORRECT_COMMAND:
-					break;
-				
+				if (buffer[0] == commandChar) {
+					int result = MessageHandler->handleMessage(socket, buffer);
+
+					switch (result) {
+					case HELP_SCREEN:
+						helpScreen(socket);
+						break;
+					case REGISTER:
+						registerUser(socket, buffer);
+						break;
+					case LOGIN:
+						break;
+					case MESSAGE:
+						break;
+					case INCORRECT_COMMAND:
+						commandError(socket);
+						break;
+
+					}
+
 				}
-				
 			}
 
 		}
@@ -263,7 +267,7 @@ int chatServer::readMessage(SOCKET _socket, char* buffer, int32_t size)
 	if (received == SOCKET_ERROR || received == 0) {
 
 		if (WSAGetLastError() == WSAESHUTDOWN) {
-			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
+			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
 		}
 
@@ -282,7 +286,7 @@ int chatServer::readMessage(SOCKET _socket, char* buffer, int32_t size)
 	if (received == SOCKET_ERROR || received == 0) {
 
 		if (WSAGetLastError() == WSAESHUTDOWN) {
-			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
+			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
 		}
 
@@ -316,7 +320,7 @@ int chatServer::tcpReceive(SOCKET _socket, char& _data, int _length) {
 int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 {
 	if (length < 0 || length > 255) {
-		log.logEntryNoVerbose(errorVerbose(PARAMETER_ERROR));
+		log.logEntryNoVerbose("\n" + errorVerbose(PARAMETER_ERROR));
 		return PARAMETER_ERROR;
 	}
 
@@ -327,7 +331,7 @@ int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 		int lastError = WSAGetLastError();
 
 		if (lastError == WSAESHUTDOWN) {
-			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
+			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
 		}
 
@@ -342,7 +346,7 @@ int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
 		int lastError = WSAGetLastError();
 
 		if (lastError == WSAESHUTDOWN) {
-			log.logEntryNoVerbose(errorVerbose(SHUTDOWN));
+			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN));
 			return SHUTDOWN;
 		}
 
@@ -381,28 +385,28 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	std::string userstr = MessageHandler->charToString(user);
 	std::string pwstr = MessageHandler->charToString(pass);
 	int result = ClientHandler->registerUser(*user, *pass, _socket); //add some error checking here
-	std::stringstream ss;
 
 	switch (result) {
 	case SUCCESS:
-		ss << "Congratulations! " << userstr << " is now registered with password: " << pwstr;
-		MessageHandler->stringConvertSend(ss, _socket);
+		logStr = + "\nCongratulations! " + userstr + " is now registered with password: " + pwstr;		
 		break;
-	case CHAR_LIMIT_REACHED:
-		ss << "\nYour Username or Password is too long. The limit is 20 characters each, please try again.\n";
-		MessageHandler->stringConvertSend(ss, _socket);
+	case CHAR_LIMIT_REACHED:		
+		logStr =  "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
 		break;
 	case PARAMETER_ERROR:
-		errorVerbose(result);
+		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax";
 		break;
 	case ALREADY_REGISTERED:
-		ss << "\nThis user is already registered, Please Try again\n";
-		MessageHandler->stringConvertSend(ss, _socket);
+		logStr = "\nThis user is already registered, Please Try again\n";
 		break;
 
 	}
+
+	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
+	MessageHandler->stringConvertSend(logStr, _socket);
 }
 
+//Debug method for checking errors
 std::string chatServer::errorVerbose(int error) {
 	if (error != SUCCESS) {
 		switch (error) {
@@ -456,37 +460,24 @@ std::string chatServer::errorVerbose(int error) {
 	}
 }
 
-void chatServer::logUserMessage(std::string _str, user _user, logger& _log) {
-	_str = _user.username + ": " + _str;
-	_log.logEntryNoVerbose(_str);
-	_user.log.logEntryNoVerbose(_str);
-}
-
+//sends help screen
 void chatServer::helpScreen(SOCKET _socket) {
-	std::string command = MessageHandler->charToString(&commandChar);
+
 
 	std::string str1 =
-	 "\n\n" + command + "help\tProvides list of commands available\n" +
-		"\n" + command + "register\t<username> <password>\nRegisters a user to the server\n" +
-		"\n" + command + "login\t<username> <password>\nlogs a user into the chat server\n" +
-		"\n" + command + "logout\tlogs a user out of the chat server\n\0";
+	 "\n\n" + commandStr + "help\tProvides list of commands available\n" +
+		"\n" + commandStr + "register\t<username> <password>\nRegisters a user to the server\n" +
+		"\n" + commandStr + "login\t<username> <password>\nlogs a user into the chat server\n" +
+		"\n" + commandStr + "logout\tlogs a user out of the chat server\n\0";
 
 	std::string str2 =
-		"\n" + command + "getlist\t provides list of active clients\n" +
-		"\n" + command + "send\t<username> <message>\nsends a message to client (255 char limit)\n" +
-		"\n" + command + "send\t<message>\nsends a message all connnected clients\n\0";
+		"\n" + commandStr + "getlist\t provides list of active clients\n" +
+		"\n" + commandStr + "send\t<username> <message>\nsends a message to client (255 char limit)\n" +
+		"\n" + commandStr + "send\t<message>\nsends a message all connnected clients\n\0";
 
 	std::string str3=
-		"\n" + command + "getlog\t<username>\nretrieves logs for a specific user\n" +
-		"\n" + command + "getlog\tpublic\nretrieves public logs\n\0";
-
-
-	////See if Client matches up
-	//for (user client : ClientHandler->clients) {
-	//	if (client.socket == _socket) {
-	//		client.log.logEntryNoVerbose(str1 + str2 + str3);
-	//	}
-	//}
+		"\n" + commandStr + "getlog\t<username>\nretrieves logs for a specific user\n" +
+		"\n" + commandStr + "getlog\tpublic\nretrieves public logs\n\0";
 
 		user* user = ClientHandler->getClient(_socket);
 		user->log.logEntryNoVerbose(str1 + str2 + str3);
@@ -496,6 +487,15 @@ void chatServer::helpScreen(SOCKET _socket) {
 		MessageHandler->stringConvertSend(str3, _socket);
 }
 
+//Sends client a message saying their syntax was wrong
+void chatServer::commandError(SOCKET _socket) {
+	std::string str = "Error: Syntax is incorrect. Use " + commandStr + "help for command syntax.";
+
+	user* client = ClientHandler->getClient(_socket);
+	client->log.logEntryNoVerbose("\n" + str);
+	MessageHandler->stringConvertSend("\n" + str, _socket);
+
+}
 
 chatServer::~chatServer() {
 	delete ClientHandler;
