@@ -20,7 +20,7 @@ class chatServer
 	char ipv6Addr[INET6_ADDRSTRLEN];
 	char commandChar;
 	std::string commandStr;
-	char* buffer;
+	
 	
 	clientHandler* ClientHandler;
 	messageHandler* MessageHandler;

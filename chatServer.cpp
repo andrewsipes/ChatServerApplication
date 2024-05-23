@@ -118,7 +118,7 @@ chatServer::chatServer() {
 	log.logEntry("\nWaiting for connections...", logPath);
 
 	commandStr = MessageHandler->charToString(&commandChar);
-	buffer = new char[255];
+
 
 }
 
@@ -194,7 +194,7 @@ int chatServer::checkCommandChar(char _character) {
 
 //This is the loop we are using to handle communication between clients
 bool chatServer::run() {
-
+	char* buffer = new char[255];
 	timeval tv;
 	tv.tv_sec = 5;
 
@@ -220,7 +220,7 @@ bool chatServer::run() {
 	
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
-			
+		
 			readMessage(socket, buffer, 255);
 
 			//don't log connection characters that are placed in the buffer
@@ -255,9 +255,13 @@ bool chatServer::run() {
 				}
 			}
 
+			else if(buffer[0] = -51) {
+				logoutUser(socket, buffer);
+			}
 		}
 	}
 
+	delete buffer;
 	return true;
 }
 
@@ -557,8 +561,22 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 	&&	strlen(_buffer) == logStrLength) {
 		logStr = "\nYou successfully logged out.";
 		ClientHandler->getClient(_socket)->connected = false;
+		
+		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+			SOCKET oldSocket = *iter;
+
+			if (oldSocket == _socket) {
+				socketList.erase(iter);
+				break;
+			}
+		}
+
 		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
 		MessageHandler->stringConvertSend(logStr, _socket);
+
+		shutdown(_socket, SD_BOTH);
+		closesocket(_socket);
+		log.logEntry(ClientHandler->getClient(_socket)->username + " has logged out", logPath);
 	}
 
 	else {
