@@ -1,0 +1,4 @@
+
+Welcome to the Chat Server!
+Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
+~login andrew sipes

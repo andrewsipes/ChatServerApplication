@@ -8,6 +8,7 @@ enum commands {
 	reg,
 	login,
 	logout,
+	getList,
 };
 class messageHandler
 {

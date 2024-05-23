@@ -38,4 +38,5 @@
 #define LOGIN 102
 #define LOGOUT 103
 #define MESSAGE 104
-
+#define GET_LIST 105
+#define GET_LOG 106

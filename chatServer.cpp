@@ -246,6 +246,11 @@ bool chatServer::run() {
 						logoutUser(socket, buffer);
 					case MESSAGE:
 						break;
+					case GET_LIST:
+						getList(socket);
+						break;
+					case GET_LOG:
+						break;
 					case INCORRECT_COMMAND:
 						commandError(socket);
 						break;
@@ -254,10 +259,7 @@ bool chatServer::run() {
 
 				}
 			}
-
-			else if(buffer[0] = -51) {
-				logoutUser(socket, buffer);
-			}
+	
 		}
 	}
 
@@ -550,7 +552,21 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 
 	int logStrLength = strlen(MessageHandler->commandStrings[logout]);
 
-	if (ClientHandler->getClient(_socket)->connected = false) {
+	if (_buffer[0] == -51) {
+
+		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+			SOCKET oldSocket = *iter;
+
+			if (oldSocket == _socket) {
+				socketList.erase(iter);
+				break;
+			}
+		}
+		shutdown(_socket, SD_BOTH);
+		closesocket(_socket);
+	}
+
+	else if (ClientHandler->getClient(_socket)->connected = false) {
 		logStr = "\nYou are not logged in.";
 		MessageHandler->stringConvertSend(logStr, _socket);
 		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
@@ -579,10 +595,32 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 		log.logEntry(ClientHandler->getClient(_socket)->username + " has logged out", logPath);
 	}
 
+
 	else {
 		commandError(_socket);
 	}
 
+}
+
+//gets list of connected clients
+void chatServer::getList(SOCKET _socket) {
+	user* client = ClientHandler->getClient(_socket);
+
+	if (client->connected == true) {
+		logStr = "\nConnected Clients: ";
+
+		for (auto* client : ClientHandler->clients) {
+			if (client->username != "") {
+				logStr = logStr + client->username + ",";
+			}
+		}
+	}
+
+	else {
+		logStr = "You must be logged in to use this command.";
+	}
+	client->log.logEntryNoVerbose(logStr, client->logFilepath);
+	MessageHandler->stringConvertSend(logStr, _socket);
 }
 
 //Sends client a message saying their syntax was wrong

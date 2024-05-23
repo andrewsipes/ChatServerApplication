@@ -1,0 +1,10 @@
+
+Welcome to the Chat Server!
+Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
+~getlistYou must be logged in to use this command.
+~getlist 1
+Error: Syntax is incorrect. Use ~help for command syntax.
+~getlist1
+Error: Syntax is incorrect. Use ~help for command syntax.
+~getlistYou must be logged in to use this command.
+~login andrew sipes
