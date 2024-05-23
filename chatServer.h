@@ -26,6 +26,7 @@ class chatServer
 	messageHandler* MessageHandler;
 	logger log;
 	logger publiclog; //only for public messages
+	std::string logPath;
 	std::string logStr;
    
 	SOCKET lSocket;

@@ -4,11 +4,11 @@ C:\Users\andre\Desktop\ChatServerApplication\errors.h(31,1): warning C4005: 'ALR
   C:\Users\andre\Desktop\ChatServerApplication\errors.h(27,1):
   see previous definition of 'ALREADY_CONNECTED'
   
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(28,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(29,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(45,72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(73,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(74,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(86,83): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(87,83): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(49,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(50,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(66,72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(90,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(91,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(103,83): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\clientHandler.cpp(104,83): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe

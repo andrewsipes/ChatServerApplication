@@ -1,12 +1,33 @@
 #include "clientHandler.h"
 #include "errors.h"
+#include <string>
+
 
 clientHandler::clientHandler(messageHandler& _messageHandler) {
 
 	mh = _messageHandler;
+	loadUsers();
 
 }
 
+//load users from file
+void clientHandler::loadUsers() {
+	std::string line;
+	std::string username, password;
+
+	//read each line from vault text file into the user's data structure
+	vault.open("logs/vault.txt", std::ios_base::in);
+	if (vault.is_open()) {
+		while (std::getline(vault, line)) {
+			std::istringstream iss(line);
+			iss >> username >> password;
+			user* newUser = new user(username, password, 0);
+			clients.push_back(newUser);
+		}
+
+		vault.close();
+	}
+}
 //Takes in Capacity and Verifies if we are in the limit
 int clientHandler::checkCapacity(int _clients)
 {
@@ -51,19 +72,15 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	userStr = mh.charToString(&_user);
 	passStr = mh.charToString(&_pass);
 
-	/*bool foundEmptyUser = false;
-	for (user* client : clients) {
-		if (client->socket == _socket && client->username == "") {
-			client->username = userStr;
-			client->password = passStr;
-			foundEmptyUser = true;
-		}
-	}
 
-	if (!foundEmptyUser) {*/
-		user* newUser = new user(userStr, passStr, 0);
-		clients.push_back(newUser);
-	//}
+	user* newUser = new user(userStr, passStr, 0);
+	clients.push_back(newUser);
+
+	vault.open("logs/vault.txt", std::ios_base::app);
+	if (vault.is_open()) {
+		vault << userStr + " " + passStr + "\n";
+		vault.close();
+	}
 
 	return SUCCESS;
 }
@@ -120,6 +137,16 @@ int clientHandler::authenticateUser(char* _user, char* _pass, SOCKET _socket) {
 
 								clients.erase(iter);
 
+								std::string newFilePath = "logs/" + clientSocket->username + ".txt";
+								std::string oldFilePath = "logs/Client " + std::to_string(_socket) + ".txt";
+								const char* oldPath = oldFilePath.c_str();
+								const char* newPath = newFilePath.c_str();
+
+								clientSocket->logFilepath = newFilePath;
+
+								//rename file
+								rename(oldPath, newPath);
+
 								return SUCCESS;
 							}
 						}
@@ -132,7 +159,6 @@ int clientHandler::authenticateUser(char* _user, char* _pass, SOCKET _socket) {
 	}
 	return USER_NOT_FOUND;
 }
-
 
 user* clientHandler::getClient(SOCKET _socket) {
 	for (user* client : clients) {

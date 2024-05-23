@@ -12,6 +12,7 @@ public:
 	logger log;
 	SOCKET socket;
 	bool connected;
+	std::string logFilepath;
 
 	user(std::string _username, std::string _password, SOCKET _socket);
 	user(SOCKET _socket);
