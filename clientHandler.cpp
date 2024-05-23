@@ -28,7 +28,11 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	int userLength = strlen(&_user);
 	int passLength = strlen(&_pass);
 
-	if (_user == '\0' || _pass == '\0') {
+	if (getClient(_socket)->connected) {
+		return ALREADY_CONNECTED;
+	}
+
+	else if (_user == '\0' || _pass == '\0') {
 		return PARAMETER_ERROR;
 	}
 
@@ -64,12 +68,12 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	return SUCCESS;
 }
 
-int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
+int clientHandler::authenticateUser(char* _user, char* _pass, SOCKET _socket) {
 
-	int userLength = strlen(&_user);
-	int passLength = strlen(&_pass);
+	int userLength = strlen(_user);
+	int passLength = strlen(_pass);
 
-	if (_user == '\0' || _pass == '\0') {
+	if (_user[0] == '\0' || _pass[0] == '\0') {
 		return PARAMETER_ERROR;
 	}
 
@@ -79,10 +83,25 @@ int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
 
 	else {
 		for (user* client : clients) {
-			if (mh.compareChar(mh.stringToChar(client->username), &_user, strlen(&_user))) {
+			bool userTest = mh.compareChar(mh.stringToChar(client->username), _user, strlen(_user));
+			bool passTest = mh.compareChar(mh.stringToChar(client->password), _pass, strlen(_pass));
+
+			if (userTest && !passTest) {
+					return INCORRECT_PW;
+			}
+			
+			else if (userTest && passTest) {
+
+				if (strlen(mh.stringToChar(client->username)) != strlen(_user)) {
+					return USER_NOT_FOUND;
+				}
+
+				else if (strlen(mh.stringToChar(client->password)) != strlen(_pass)) {
+					return INCORRECT_PW;
+				}
 
 				//authenticated
-				if (client->connected)
+				else if (client->connected)
 					return ALREADY_CONNECTED;
 
 				//now we need to update which socket the user is on
@@ -100,12 +119,10 @@ int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
 								&& dupClient->socket != clientSocket->socket) {
 
 								clients.erase(iter);
-								break;
-							}
 
+								return SUCCESS;
+							}
 						}
-				
-						break;
 					}
 				}
 			}
@@ -113,7 +130,7 @@ int clientHandler::authenticateUser(char& _user, char& _pass, SOCKET _socket) {
 
 
 	}
-	return SUCCESS;
+	return USER_NOT_FOUND;
 }
 
 

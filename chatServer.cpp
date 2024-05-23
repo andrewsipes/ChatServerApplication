@@ -215,9 +215,7 @@ bool chatServer::run() {
 		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
-	//Create two separate log files: one for user
-	//commands and another for public messages
-	//(excluding direct messages or DMs).
+
 	
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
@@ -403,6 +401,9 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	case ALREADY_REGISTERED:
 		logStr = "\nThis user is already registered, Please Try again\n";
 		break;
+	case ALREADY_CONNECTED:
+		logStr = "\nYou cannot register while logged in. Please log out first.";
+		break;
 
 	}
 
@@ -502,7 +503,7 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 
 	std::string userstr = MessageHandler->charToString(user);
 	std::string pwstr = MessageHandler->charToString(pass);
-	int result = ClientHandler->authenticateUser(*user, *pass, _socket); //add some error checking here
+	int result = ClientHandler->authenticateUser(user, pass, _socket); //add some error checking here
 
 	switch (result) {
 	case SUCCESS:
@@ -522,6 +523,13 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 	case INCORRECT_UN_OR_PW:
 		logStr = "\nIncorrect Username or Password, Please try again.";
 		break;
+	case USER_NOT_FOUND:
+		logStr = userstr + " was not found. Please try again.";
+		break;
+	case INCORRECT_PW:
+		logStr = "Incorrect Password. Please try again.";
+		break;
+			
 	}
 
 	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr);
