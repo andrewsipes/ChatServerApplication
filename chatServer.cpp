@@ -245,6 +245,7 @@ bool chatServer::run() {
 					case LOGOUT:
 						logoutUser(socket, buffer);
 					case MESSAGE:
+						send(socket, buffer);
 						break;
 					case GET_LIST:
 						getList(socket);
@@ -631,6 +632,33 @@ void chatServer::commandError(SOCKET _socket) {
 	client->log.logEntryNoVerbose("\n" + str, ClientHandler->getClient(_socket)->logFilepath);
 	MessageHandler->stringConvertSend("\n" + str, _socket);
 
+}
+
+//sends a message to the client
+void chatServer::send(SOCKET _socket, char* _buffer) {
+	
+	bool toPublic = false;
+	user* sender = ClientHandler->getClient(_socket);
+	user* receiver = nullptr;
+
+	int* lastChar = new int;
+	char* test = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
+	std::string testStr = MessageHandler->charToString(test);
+
+	for (user* client : ClientHandler->clients) {
+		if (client->username == testStr) {
+
+			toPublic = false;
+			receiver = client;
+
+		}
+	}
+
+	if (!toPublic) {
+
+	}
+
+	delete lastChar;
 }
 
 chatServer::~chatServer() {

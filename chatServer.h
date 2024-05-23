@@ -57,5 +57,6 @@ private:
 	void loginUser(SOCKET _socket, char* _buffer);
 	void logoutUser(SOCKET _socket, char* _buffer);
 	void getList(SOCKET _socket);
+	void send(SOCKET _socket, char* _buffer);
 };
 

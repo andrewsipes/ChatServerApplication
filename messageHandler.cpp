@@ -31,6 +31,14 @@ messageHandler::messageHandler(const char _commandChar){
 	const char* getList = stringToChar(ssGetList);
 	commandStrings.push_back((char*)getList);
 
+	std::stringstream ssGetLog; ssGetLog << commandChar << "getlog";
+	const char* getLog = stringToChar(ssGetLog);
+	commandStrings.push_back((char*)getLog);
+
+	std::stringstream ssSend; ssSend << commandChar << "send";
+	const char* send = stringToChar(ssSend);
+	commandStrings.push_back((char*)send);
+
 }
 int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 
@@ -71,7 +79,7 @@ int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 		return LOGOUT;
 	}
 
-	//logout
+	//get list
 	else if (compareChar(_data, commandStrings[getList], strlen(commandStrings[getList]))) {
 
 		if (strlen(_data) != strlen(commandStrings[getList])) {
@@ -79,6 +87,12 @@ int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 		}
 
 		return GET_LIST;
+	}
+
+	//send
+	else if (compareChar(_data, commandStrings[send], strlen(commandStrings[send]))) {
+
+		return SEND;
 	}
 
 
