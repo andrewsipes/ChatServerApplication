@@ -204,6 +204,7 @@ bool chatServer::run() {
 	readySet = masterSet;
 	select(0, &readySet, NULL, NULL, &tv);
 
+	//Add new socket and client to the server
 	if (socketList.size() < capacity && FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
 		socketList.push_back(newSocket);
@@ -216,11 +217,12 @@ bool chatServer::run() {
 		logStr = "Welcome to the Chat Server!\nPlease use ' " + commandStr + " ' followed by a command to get started." +
 			"For example, to get list of commands, enter: " + commandStr + "help";
 
-		client->log.logEntryNoVerbose("\n" + logStr, client->logFilepath);
+		//client->log.logEntryNoVerbose("\n" + logStr, client->logFilepath);
 		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
 
+	//Decline if capacity met
 	else if (FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
 		log.logEntry("\nClient " + std::to_string(newSocket) + " attempted to connect, but capacity has been reached...", logPath);
@@ -230,6 +232,7 @@ bool chatServer::run() {
 		closesocket(newSocket);		
 	}
 	
+	//Check each socket for messages
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
 		
@@ -237,19 +240,8 @@ bool chatServer::run() {
 
 			//Disconnect Character string, remove socket from list and update current capacity.
 			if (buffer[0] == -51) {
-
 				logoutUser(socket, buffer);
-				/*for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
-					SOCKET oldSocket = *iter;
-
-					if (oldSocket == socket) {
-						socketList.erase(iter);
-						shutdown(socket, SD_BOTH);
-						closesocket(socket);
-						FD_CLR(socket, &masterSet);
-						break;
-					}
-				}*/
+				
 			}
 
 			//don't log connection characters that are placed in the buffe
@@ -281,6 +273,7 @@ bool chatServer::run() {
 						getList(socket);
 						break;
 					case GET_LOG:
+						getLogForUser(socket, buffer);
 						break;
 					case INCORRECT_COMMAND:
 						commandError(socket);
@@ -289,12 +282,16 @@ bool chatServer::run() {
 					}
 
 				}
+
+				else if (buffer[0] != commandChar) {
+					commandError(socket);
+				}
 			}
 	
 		}
 	}
 
-	delete buffer;
+	delete [] buffer;
 	return true;
 }
 
@@ -581,12 +578,11 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 	int* lastChar = new int;
 	user* sendToMe = sender;
 
-	//sender->log.logEntryNoVerbose("\n" + MessageHandler->charToString(_buffer), sender->logFilepath);
 	char* charToSend = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
 	char* receiverName = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
 
-	if (ClientHandler->getClient(_socket)->connected = false) {
+	if (ClientHandler->getClient(_socket)->connected == false) {
 		logStr = "\nYou must be logged in to use this command.";
 		sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
 	}
@@ -630,6 +626,80 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 			MessageHandler->sendMessage(sendToMe->socket, MessageHandler->stringToChar(logStr), 255);
 	}
 
+	delete lastChar;
+}
+
+void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
+	int* lastChar = new int;
+	char* buffer = new char[255];
+	int maxChars = 254;
+	user* client = ClientHandler->getClient(_socket);
+
+	char* logType = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
+	logType = (char*)MessageHandler->extract(_buffer, *lastChar + 1, *lastChar);
+
+	std::fstream logStream;
+
+	if (client->connected == true) {
+
+		if (MessageHandler->charToString(logType) == "user") {
+			logStream.open(client->logFilepath, std::ios::in);
+
+			if (logStream.is_open()) {
+				while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
+					
+					buffer[logStream.gcount()] = '\0'; //add null terminator
+					MessageHandler->sendMessage(_socket, buffer, 255);
+				}
+
+				logStream.close();
+			}
+
+			else {
+				logStr = "\nUnable to Open Log file...";
+				log.logEntryNoVerbose(logStr, logPath);
+				client->log.logEntryNoVerbose(logStr, client->logFilepath);
+				MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+				
+			}
+
+		}
+
+		else if (MessageHandler->charToString(logType) == "public") {
+			logStream.open(logPath, std::ios::in);
+
+			if (logStream.is_open()) {
+				while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
+
+					buffer[logStream.gcount()] = '\0'; //add null terminator
+					MessageHandler->sendMessage(_socket, buffer, 255);
+				}
+
+				logStream.close();
+			}
+
+			else {
+				logStr = "\nUnable to Open Log file...";
+				log.logEntryNoVerbose(logStr, logPath);
+				client->log.logEntryNoVerbose(logStr, client->logFilepath);
+				MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+
+			}
+
+		}
+
+		else {
+			commandError(_socket);
+		}
+	}
+
+	else {
+		logStr = "\nYou must be logged in to use this command.";
+		client->log.logEntryNoVerbose(logStr, client->logFilepath);
+		MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+	}
+
+	delete [] buffer;
 	delete lastChar;
 }
 

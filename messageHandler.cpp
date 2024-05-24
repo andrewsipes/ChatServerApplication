@@ -94,6 +94,11 @@ int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 
 		return SEND;
 	}
+	
+	else if (compareChar(_data, commandStrings[getLog], strlen(commandStrings[getLog]))) {
+
+		return GET_LOG;
+	}
 
 
 	else {

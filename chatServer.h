@@ -54,5 +54,6 @@ private:
 	void logoutUser(SOCKET _socket, char* _buffer);
 	void getList(SOCKET _socket);
 	void messageToClient(SOCKET _socket, char* _buffer);
+	void getLogForUser(SOCKET _socket, char* _buffer);
 };
 
