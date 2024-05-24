@@ -413,7 +413,7 @@ void chatServer::helpScreen(SOCKET _socket) {
 		"\n" + commandStr + "send\t<message>\nsends a message all connnected clients\n\0";
 
 	std::string str3=
-		"\n" + commandStr + "getlog\t<username>\nretrieves logs for a specific user\n" +
+		"\n" + commandStr + "getlog\tuser\nretrieves logs for a specific user\n" +
 		"\n" + commandStr + "getlog\tpublic\nretrieves public logs\n\0";
 
 		user* user = ClientHandler->getClient(_socket);
@@ -497,7 +497,7 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 	char* command = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *last);
 	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
-	if (extra != nullptr || extra != "\0") {
+	if (extra[0] != '\0') {
 		commandError(_socket);
 	}
 
@@ -678,18 +678,25 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 }
 
 void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
+
 	int* lastChar = new int;
 	char* buffer = new char[255];
 	int maxChars = 254;
 	user* client = ClientHandler->getClient(_socket);
 
-	char* logType = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
-	logType = (char*)MessageHandler->extract(_buffer, *lastChar + 1, *lastChar);
+	char* logType = (char*)MessageHandler->extractUntilSpace(_buffer, strlen(MessageHandler->commandStrings[getLog]) + 1, *lastChar);
 	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
-	if (extra != nullptr || extra != "\0") {
+	if (!client->connected) {
+		logStr = "You must be logged in to use this command.";
+		client->log.logEntryNoVerbose(logStr, client->logFilepath);
+		MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+	}
+
+	else if (extra[0] != '\0') {
 		commandError(_socket);
 	}
+
 
 	else {
 		std::fstream logStream;
