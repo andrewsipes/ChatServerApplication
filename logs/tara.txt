@@ -1,8 +1,0 @@
-
-Welcome to the Chat Server!
-Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
-Welcome to the Chat Server!
-Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
-~login tara sipes
-User Authenticated Successfully
-Welcome tara!

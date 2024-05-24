@@ -13,23 +13,25 @@ chatServer::chatServer() {
 	//Hostname	
 	gethostname(hostname, sizeof(hostname));
 
-	//IP Address	
+	//IPv4 Address	
 	struct addrinfo a4Info, *result;
 	memset(&a4Info, 0, sizeof(a4Info));
-	a4Info.ai_family = AF_INET;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
+	a4Info.ai_family = AF_INET;										
 	getaddrinfo(hostname, NULL, &a4Info, &result);
 	struct sockaddr_in* ipv4 = (sockaddr_in*)(result->ai_addr);
 	inet_ntop(AF_INET, &ipv4->sin_addr, ipv4Addr, INET_ADDRSTRLEN); //Convert
 
-	//IP Address	
+	//IPv6 Address	
 	struct addrinfo a6Info;
 	memset(&a6Info, 0, sizeof(a6Info));
-	a6Info.ai_family = AF_INET6;										//aInfo.ai_socktype = SOCK_STREAM; Not needed
+	a6Info.ai_family = AF_INET6;										
 	getaddrinfo(hostname, NULL, &a6Info, &result);
 	struct sockaddr_in6* ipv6 = (sockaddr_in6*)(result->ai_addr);
 	inet_ntop(AF_INET6, &ipv6->sin6_addr, ipv6Addr, INET6_ADDRSTRLEN); //Convert
 	log.logEntry("\nHostName:" + MessageHandler->charToString(hostname) + "\nIPv4 Address: " + ipv4Addr + "\nIPv6 Address: " + ipv6Addr + "\n\nLet's setup the server\n", logPath);
 
+
+	//Below code gets parameters for the server from admin user who starts the server
 	int input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
@@ -107,6 +109,7 @@ chatServer::chatServer() {
 		std::cin.clear();
 		std::cin.ignore();
 	}
+	//clear screen and display host info + connections
 	system("CLS");
 	log.logEntry("\nServer has been Setup, see configuration below:", logPath);
 	log.logEntry("\nHostname: " + MessageHandler->charToString(hostname), logPath);
@@ -192,7 +195,7 @@ int chatServer::checkCommandChar(char _character) {
 
 }
 
-//This is the loop we are using to handle communication between clients
+//Main Loop, checks listening sockets and facilitates communication
 bool chatServer::run() {
 	char* buffer = new char[255];
 	timeval tv;
@@ -201,7 +204,7 @@ bool chatServer::run() {
 	readySet = masterSet;
 	select(0, &readySet, NULL, NULL, &tv);
 
-	if (socketList.size() <= capacity && FD_ISSET(lSocket, &readySet)){
+	if (socketList.size() < capacity && FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
 		socketList.push_back(newSocket);
 		FD_SET(newSocket, &masterSet);
@@ -220,7 +223,8 @@ bool chatServer::run() {
 
 	else if (FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
-		logStr = "Capacity has been reached, Try again later";
+		log.logEntry("\nClient " + std::to_string(newSocket) + " attempted to connect, but capacity has been reached...", logPath);
+		logStr = "\nCapacity has been reached, Try again later";
 		MessageHandler->sendMessage(newSocket, MessageHandler->stringToChar(logStr), 255);
 		shutdown(newSocket, SD_BOTH);
 		closesocket(newSocket);		
@@ -231,12 +235,26 @@ bool chatServer::run() {
 		
 			MessageHandler->readMessage(socket, buffer, 255);
 
-			//don't log connection characters that are placed in the buffer
+			//Remove socket from the list if it gives you this character, it will get readded anyway
+			if (buffer[0] == -51) {
+
+				for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+					SOCKET oldSocket = *iter;
+
+					if (oldSocket == socket) {
+						socketList.erase(iter);
+						break;
+					}
+				}
+			}
+
+			//don't log connection characters that are placed in the buffe
 			if (buffer[0] >= 32) {
 				//Add user into Vector of users, and log
 				user* client = ClientHandler->getClient(socket);
 				client->log.logEntryNoVerbose("\n" + MessageHandler->charToString(buffer), client->logFilepath);
 
+				//if command is picked up, check the command, and do the logic associated with it
 				if (buffer[0] == commandChar) {
 					int result = MessageHandler->handleMessage(socket, buffer);
 
@@ -460,6 +478,7 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 				break;
 			}
 		}
+		log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
 		shutdown(_socket, SD_BOTH);
 		closesocket(_socket);
 	}
@@ -490,7 +509,7 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 
 		shutdown(_socket, SD_BOTH);
 		closesocket(_socket);
-		log.logEntry(ClientHandler->getClient(_socket)->username + " has logged out", logPath);
+		log.logEntry("\n"+ ClientHandler->getClient(_socket)->username + " has logged out", logPath);
 	}
 
 
@@ -540,7 +559,7 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 	int* lastChar = new int;
 	user* sendToMe = sender;
 
-	sender->log.logEntryNoVerbose("\n" + MessageHandler->charToString(_buffer), sender->logFilepath);
+	//sender->log.logEntryNoVerbose("\n" + MessageHandler->charToString(_buffer), sender->logFilepath);
 	char* charToSend = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
 	char* receiverName = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
