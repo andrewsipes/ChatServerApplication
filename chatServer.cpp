@@ -159,7 +159,7 @@ int chatServer::init() {
 	log.logEntryNoVerbose("\nZeroing Master Set...", logPath);
 	FD_SET(lSocket, &masterSet);
 	log.logEntryNoVerbose("\nAdding Listening Socket to MasterSet..", logPath);
-	socketList.push_back(lSocket);
+	//socketList.push_back(lSocket);
 	
 	return SUCCESS;
 
@@ -235,21 +235,25 @@ bool chatServer::run() {
 		
 			MessageHandler->readMessage(socket, buffer, 255);
 
-			//Remove socket from the list if it gives you this character, it will get readded anyway
+			//Disconnect Character string, remove socket from list and update current capacity.
 			if (buffer[0] == -51) {
 
-				for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+				logoutUser(socket, buffer);
+				/*for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
 					SOCKET oldSocket = *iter;
 
 					if (oldSocket == socket) {
 						socketList.erase(iter);
+						shutdown(socket, SD_BOTH);
+						closesocket(socket);
+						FD_CLR(socket, &masterSet);
 						break;
 					}
-				}
+				}*/
 			}
 
 			//don't log connection characters that are placed in the buffe
-			if (buffer[0] >= 32) {
+			else if (buffer[0] >= 32) {
 				//Add user into Vector of users, and log
 				user* client = ClientHandler->getClient(socket);
 				client->log.logEntryNoVerbose("\n" + MessageHandler->charToString(buffer), client->logFilepath);
@@ -308,7 +312,8 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 
 	switch (result) {
 	case SUCCESS:
-		logStr = + "\nCongratulations! " + userstr + " is now registered with password: " + pwstr;		
+		logStr = + "\nCongratulations! " + userstr + " is now registered with password: " + pwstr;
+		log.logEntryNoVerbose("\n" + userstr + "is now registered... ", logPath);
 		break;
 	case CHAR_LIMIT_REACHED:		
 		logStr =  "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
@@ -324,7 +329,6 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 		break;
 
 	}
-
 
 	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
 	MessageHandler->stringConvertSend(logStr, _socket);
@@ -436,6 +440,7 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 		logStr = +"\nWelcome " + userstr + "!";
 		ClientHandler->getClient(_socket)->connected = true;
 		ClientHandler->getClient(_socket)->log.logEntryNoVerbose("\nUser Authenticated Successfully", ClientHandler->getClient(_socket)->logFilepath);
+		log.logEntry("\n" + ClientHandler->getClient(_socket)->username + " logged in...", logPath);
 		break;
 	case CHAR_LIMIT_REACHED:
 		logStr = "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
@@ -479,15 +484,32 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 			}
 		}
 		log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
+		FD_CLR(_socket, &masterSet);
 		shutdown(_socket, SD_BOTH);
 		closesocket(_socket);
 	}
 
-	else if (ClientHandler->getClient(_socket)->connected = false) {
-		logStr = "\nYou are not logged in.";
-		MessageHandler->stringConvertSend(logStr, _socket);
+	else if (ClientHandler->getClient(_socket)->connected == false) {
+
+		logStr = "\nYou successfully logged out.";
+		ClientHandler->getClient(_socket)->connected = false;
+
+		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+			SOCKET oldSocket = *iter;
+
+			if (oldSocket == _socket) {
+				socketList.erase(iter);
+				break;
+			}
+		}
+
 		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
 		MessageHandler->stringConvertSend(logStr, _socket);
+
+		shutdown(_socket, SD_BOTH);
+		closesocket(_socket);
+		log.logEntry("\nClient " + std::to_string(ClientHandler->getClient(_socket)->socket) + " has logged out", logPath);
+
 	}
 
 	else if (MessageHandler->compareChar(_buffer, MessageHandler->commandStrings[logout], logStrLength)
