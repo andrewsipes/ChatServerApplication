@@ -52,7 +52,7 @@ private:
 	void registerUser(SOCKET _socket, char* _buffer);
 	void loginUser(SOCKET _socket, char* _buffer);
 	void logoutUser(SOCKET _socket, char* _buffer);
-	void getList(SOCKET _socket);
+	void getList(SOCKET _socket, char* _buffer);
 	void messageToClient(SOCKET _socket, char* _buffer);
 	void getLogForUser(SOCKET _socket, char* _buffer);
 };

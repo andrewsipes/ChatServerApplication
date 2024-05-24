@@ -270,7 +270,7 @@ bool chatServer::run() {
 						messageToClient(socket, buffer);
 						break;
 					case GET_LIST:
-						getList(socket);
+						getList(socket, buffer);
 						break;
 					case GET_LOG:
 						getLogForUser(socket, buffer);
@@ -302,10 +302,19 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	//disregard the command so we can get the username then the password
 	char* user = (char*)MessageHandler->extractUntilSpace(_buffer, strlen(MessageHandler->commandStrings[reg]) + 1, *last);
 	char* pass = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
+	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
-	std::string userstr = MessageHandler->charToString(user);
-	std::string pwstr = MessageHandler->charToString(pass);
-	int result = ClientHandler->registerUser(*user, *pass, _socket); //add some error checking here
+	int result;
+	std::string userstr, pwstr;
+	if (extra != nullptr || extra != "\0") {
+		result = INCORRECT_COMMAND;
+	}
+
+	else {
+		userstr = MessageHandler->charToString(user);
+		pwstr = MessageHandler->charToString(pass);
+		result = ClientHandler->registerUser(*user, *pass, _socket); //add some error checking here
+	}
 
 	switch (result) {
 	case SUCCESS:
@@ -324,11 +333,14 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	case ALREADY_CONNECTED:
 		logStr = "\nYou cannot register while logged in. Please log out first.";
 		break;
-
+	case INCORRECT_COMMAND:
+		commandError(_socket);
 	}
 
-	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
-	MessageHandler->stringConvertSend(logStr, _socket);
+	if (result != INCORRECT_COMMAND) {
+		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+		MessageHandler->stringConvertSend(logStr, _socket);
+	}
 }
 
 //Debug method for checking errors
@@ -420,17 +432,23 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 	//disregard the command so we can get the username then the password
 	char* user = (char*)MessageHandler->extractUntilSpace(_buffer, strlen(MessageHandler->commandStrings[login]) + 1, *last);
 	char* pass = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
-
-	std::string userstr = MessageHandler->charToString(user);
-	std::string pwstr = MessageHandler->charToString(pass);
+	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
 	int result;
-	if (ClientHandler->getClient(_socket)->connected == true) {
+	std::string userstr, pwstr;
+	if (extra[0] != '\0') {
+		result = INCORRECT_COMMAND;
+	}
+
+	else if (ClientHandler->getClient(_socket)->connected == true) {
 		result = ALREADY_CONNECTED;
 	}
 
-	else
+	else {
+		userstr = MessageHandler->charToString(user);
+		pwstr = MessageHandler->charToString(pass);
 		result = ClientHandler->authenticateUser(user, pass, _socket);
+	}
 
 	switch (result) {
 	case SUCCESS:
@@ -457,11 +475,16 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 	case INCORRECT_PW:
 		logStr = "\nIncorrect Password. Please try again.";
 		break;
+	case INCORRECT_COMMAND:
+		commandError(_socket);
+		break;
 			
 	}
 
-	ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
-	MessageHandler->stringConvertSend(logStr, _socket);
+	if (result != INCORRECT_COMMAND) {
+		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+		MessageHandler->stringConvertSend(logStr, _socket);
+	}
 
 }
 
@@ -469,94 +492,119 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 
 	int logStrLength = strlen(MessageHandler->commandStrings[logout]);
+	int* last = new int;
 
-	if (_buffer[0] == -51) {
+	char* command = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *last);
+	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
-		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
-			SOCKET oldSocket = *iter;
-
-			if (oldSocket == _socket) {
-				socketList.erase(iter);
-				break;
-			}
-		}
-		log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
-		FD_CLR(_socket, &masterSet);
-		shutdown(_socket, SD_BOTH);
-		closesocket(_socket);
-	}
-
-	else if (ClientHandler->getClient(_socket)->connected == false) {
-
-		logStr = "\nYou successfully logged out.";
-		ClientHandler->getClient(_socket)->connected = false;
-
-		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
-			SOCKET oldSocket = *iter;
-
-			if (oldSocket == _socket) {
-				socketList.erase(iter);
-				break;
-			}
-		}
-
-		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
-		MessageHandler->stringConvertSend(logStr, _socket);
-
-		shutdown(_socket, SD_BOTH);
-		closesocket(_socket);
-		log.logEntry("\nClient " + std::to_string(ClientHandler->getClient(_socket)->socket) + " has logged out", logPath);
-
-	}
-
-	else if (MessageHandler->compareChar(_buffer, MessageHandler->commandStrings[logout], logStrLength)
-	&&	strlen(_buffer) == logStrLength) {
-		logStr = "\nYou successfully logged out.";
-		ClientHandler->getClient(_socket)->connected = false;
-		
-		for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
-			SOCKET oldSocket = *iter;
-
-			if (oldSocket == _socket) {
-				socketList.erase(iter);
-				break;
-			}
-		}
-
-		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
-		MessageHandler->stringConvertSend(logStr, _socket);
-
-		shutdown(_socket, SD_BOTH);
-		closesocket(_socket);
-		log.logEntry("\n"+ ClientHandler->getClient(_socket)->username + " has logged out", logPath);
-	}
-
-
-	else {
+	if (extra != nullptr || extra != "\0") {
 		commandError(_socket);
 	}
+
+	else {
+
+		if (_buffer[0] == -51) {
+
+			for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+				SOCKET oldSocket = *iter;
+
+				if (oldSocket == _socket) {
+					socketList.erase(iter);
+					break;
+				}
+			}
+			log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
+			FD_CLR(_socket, &masterSet);
+			shutdown(_socket, SD_BOTH);
+			closesocket(_socket);
+		}
+
+		else if (ClientHandler->getClient(_socket)->connected == false) {
+
+			logStr = "\nYou successfully logged out.";
+			ClientHandler->getClient(_socket)->connected = false;
+
+			for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+				SOCKET oldSocket = *iter;
+
+				if (oldSocket == _socket) {
+					socketList.erase(iter);
+					break;
+				}
+			}
+
+			ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+			MessageHandler->stringConvertSend(logStr, _socket);
+
+			shutdown(_socket, SD_BOTH);
+			closesocket(_socket);
+			log.logEntry("\nClient " + std::to_string(ClientHandler->getClient(_socket)->socket) + " has logged out", logPath);
+
+		}
+
+		else if (MessageHandler->compareChar(_buffer, MessageHandler->commandStrings[logout], logStrLength)
+			&& strlen(_buffer) == logStrLength) {
+			logStr = "\nYou successfully logged out.";
+			ClientHandler->getClient(_socket)->connected = false;
+
+			for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+				SOCKET oldSocket = *iter;
+
+				if (oldSocket == _socket) {
+					socketList.erase(iter);
+					break;
+				}
+			}
+
+			ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+			MessageHandler->stringConvertSend(logStr, _socket);
+
+			shutdown(_socket, SD_BOTH);
+			closesocket(_socket);
+			log.logEntry("\n" + ClientHandler->getClient(_socket)->username + " has logged out", logPath);
+		}
+
+
+		else {
+			commandError(_socket);
+		}
+	}
+
+	delete last;
 
 }
 
 //gets list of connected clients
-void chatServer::getList(SOCKET _socket) {
+void chatServer::getList(SOCKET _socket, char* _buffer) {
 	user* client = ClientHandler->getClient(_socket);
 
-	if (client->connected == true) {
-		logStr = "\nConnected Clients: ";
+	int* last = new int;
+	char* command = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *last);
+	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
-		for (auto* client : ClientHandler->clients) {
-			if (client->username != "") {
-				logStr = logStr + client->username + ",";
-			}
-		}
+	if (extra[0] != '\0') {
+		commandError(_socket);
 	}
 
 	else {
-		logStr = "You must be logged in to use this command.";
+		if (client->connected == true) {
+			logStr = "\nConnected Clients: ";
+
+			for (auto* client : ClientHandler->clients) {
+				if (client->username != "" && client->connected) {
+					logStr = logStr + client->username + ",";
+				}
+			}
+		}
+
+		else {
+			logStr = "You must be logged in to use this command.";
+		}
+		client->log.logEntryNoVerbose(logStr, client->logFilepath);
+		MessageHandler->stringConvertSend(logStr, _socket);
 	}
-	client->log.logEntryNoVerbose(logStr, client->logFilepath);
-	MessageHandler->stringConvertSend(logStr, _socket);
+
+	delete last;
 }
 
 //Sends client a message saying their syntax was wrong
@@ -637,66 +685,73 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 
 	char* logType = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
 	logType = (char*)MessageHandler->extract(_buffer, *lastChar + 1, *lastChar);
+	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
-	std::fstream logStream;
-
-	if (client->connected == true) {
-
-		if (MessageHandler->charToString(logType) == "user") {
-			logStream.open(client->logFilepath, std::ios::in);
-
-			if (logStream.is_open()) {
-				while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
-					
-					buffer[logStream.gcount()] = '\0'; //add null terminator
-					MessageHandler->sendMessage(_socket, buffer, 255);
-				}
-
-				logStream.close();
-			}
-
-			else {
-				logStr = "\nUnable to Open Log file...";
-				log.logEntryNoVerbose(logStr, logPath);
-				client->log.logEntryNoVerbose(logStr, client->logFilepath);
-				MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
-				
-			}
-
-		}
-
-		else if (MessageHandler->charToString(logType) == "public") {
-			logStream.open(logPath, std::ios::in);
-
-			if (logStream.is_open()) {
-				while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
-
-					buffer[logStream.gcount()] = '\0'; //add null terminator
-					MessageHandler->sendMessage(_socket, buffer, 255);
-				}
-
-				logStream.close();
-			}
-
-			else {
-				logStr = "\nUnable to Open Log file...";
-				log.logEntryNoVerbose(logStr, logPath);
-				client->log.logEntryNoVerbose(logStr, client->logFilepath);
-				MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
-
-			}
-
-		}
-
-		else {
-			commandError(_socket);
-		}
+	if (extra != nullptr || extra != "\0") {
+		commandError(_socket);
 	}
 
 	else {
-		logStr = "\nYou must be logged in to use this command.";
-		client->log.logEntryNoVerbose(logStr, client->logFilepath);
-		MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+		std::fstream logStream;
+
+		if (client->connected == true) {
+
+			if (MessageHandler->charToString(logType) == "user") {
+				logStream.open(client->logFilepath, std::ios::in);
+
+				if (logStream.is_open()) {
+					while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
+
+						buffer[logStream.gcount()] = '\0'; //add null terminator
+						MessageHandler->sendMessage(_socket, buffer, 255);
+					}
+
+					logStream.close();
+				}
+
+				else {
+					logStr = "\nUnable to Open Log file...";
+					log.logEntryNoVerbose(logStr, logPath);
+					client->log.logEntryNoVerbose(logStr, client->logFilepath);
+					MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+
+				}
+
+			}
+
+			else if (MessageHandler->charToString(logType) == "public") {
+				logStream.open(logPath, std::ios::in);
+
+				if (logStream.is_open()) {
+					while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
+
+						buffer[logStream.gcount()] = '\0'; //add null terminator
+						MessageHandler->sendMessage(_socket, buffer, 255);
+					}
+
+					logStream.close();
+				}
+
+				else {
+					logStr = "\nUnable to Open Log file...";
+					log.logEntryNoVerbose(logStr, logPath);
+					client->log.logEntryNoVerbose(logStr, client->logFilepath);
+					MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+
+				}
+
+			}
+
+			else {
+				commandError(_socket);
+			}
+		}
+
+		else {
+			logStr = "\nYou must be logged in to use this command.";
+			client->log.logEntryNoVerbose(logStr, client->logFilepath);
+			MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
+		}
 	}
 
 	delete [] buffer;

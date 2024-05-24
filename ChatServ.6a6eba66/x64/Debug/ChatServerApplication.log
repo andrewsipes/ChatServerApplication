@@ -6,7 +6,7 @@ C:\Users\andre\Desktop\ChatServerApplication\errors.h(31,1): warning C4005: 'ALR
   
 C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(138,29): warning C4244: 'argument': conversion from 'SOCKET' to 'int', possible loss of data
 C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(303,109): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(421,111): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(471,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(386,1): warning C4715: 'chatServer::errorVerbose': not all control paths return a value
+C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(433,111): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(494,19): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\andre\Desktop\ChatServerApplication\chatServer.cpp(398,1): warning C4715: 'chatServer::errorVerbose': not all control paths return a value
   ChatServerApplication.vcxproj -> C:\Users\andre\Desktop\ChatServerApplication\x64\Debug\ChatServerApplication.exe

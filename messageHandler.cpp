@@ -210,11 +210,12 @@ const char* messageHandler::extractUntilSpace(char* _data, int startingElement, 
 
 	for (int i = startingElement; i < strlen(_data); i++) {
 
-		if (_data[i] == ' '){
+		if (_data[i] == ' '){	
 			lastChar = i;
 			break;
 		}
 
+		lastChar = i;
 		ss << _data[i];
 	
 	}
