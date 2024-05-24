@@ -8,9 +8,9 @@ enum commands {
 	reg,
 	login,
 	logout,
-	send,
 	getList,
 	getLog,
+	sendMes,
 };
 class messageHandler
 {
@@ -32,6 +32,7 @@ public:
 	const char* stringToChar(std::string str);
 	std::string charToString(char* _char);
 	const char* extractUntilSpace(char* _data, int startingElement, int& lastChar);
+	const char* extract(char* _data, int startingElement, int& lastChar);
 	~messageHandler();
 };
 

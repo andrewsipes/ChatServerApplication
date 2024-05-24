@@ -90,7 +90,7 @@ int messageHandler::handleMessage(SOCKET _socket, char* _data) {
 	}
 
 	//send
-	else if (compareChar(_data, commandStrings[send], strlen(commandStrings[send]))) {
+	else if (compareChar(_data, commandStrings[sendMes], strlen(commandStrings[sendMes]))) {
 
 		return SEND;
 	}
@@ -212,6 +212,16 @@ const char* messageHandler::extractUntilSpace(char* _data, int startingElement, 
 
 		ss << _data[i];
 	
+	}
+
+	const char* returnChar = stringToChar(ss);
+	return returnChar;
+}
+const char* messageHandler::extract(char* _data, int startingElement, int& lastChar) {
+	std::stringstream ss;
+
+	for (int i = startingElement; i < strlen(_data); i++) {
+		ss << _data[i];
 	}
 
 	const char* returnChar = stringToChar(ss);

@@ -1,15 +1,13 @@
 
 Welcome to the Chat Server!
 Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
+Welcome to the Chat Server!
+Please use ' ~ ' followed by a command to get started.For example, to get list of commands, enter: ~help
 ~login andrew sipes
 User Authenticated Successfully
 Welcome andrew!
-User Authenticated Successfully
-Welcome andrew!
-~getlist/nConnected Clients: andrew,
-User Authenticated Successfully
-Welcome andrew!
-~getlist1
-Error: Syntax is incorrect. Use ~help for command syntax.
-~getlist
-Connected Clients: andrew,
+~send leia here's another message
+~send leia here's another message
+Client was not found.Please check connected clients.
+~send leia here's another message
+~send leia here's another message

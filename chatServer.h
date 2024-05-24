@@ -48,15 +48,11 @@ private:
 	void helpScreen(SOCKET _socket);
 	int checkPort(uint16_t _port);
 	int checkCommandChar(char _character);
-	int readMessage(SOCKET _socket, char* buffer, int32_t size);
-	int sendMessage(SOCKET _socket, const char* data, int32_t length);
-	int tcpReceive(SOCKET _socket, char& _data, int _length);
-	int tcpSend(SOCKET _socket, const char* _data, int16_t _length);
 	void commandError(SOCKET _socket);
 	void registerUser(SOCKET _socket, char* _buffer);
 	void loginUser(SOCKET _socket, char* _buffer);
 	void logoutUser(SOCKET _socket, char* _buffer);
 	void getList(SOCKET _socket);
-	void send(SOCKET _socket, char* _buffer);
+	void messageToClient(SOCKET _socket, char* _buffer);
 };
 

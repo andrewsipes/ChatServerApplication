@@ -201,7 +201,7 @@ bool chatServer::run() {
 	readySet = masterSet;
 	select(0, &readySet, NULL, NULL, &tv);
 
-	if (FD_ISSET(lSocket, &readySet)){
+	if (socketList.size() <= capacity && FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
 		socketList.push_back(newSocket);
 		FD_SET(newSocket, &masterSet);
@@ -217,11 +217,19 @@ bool chatServer::run() {
 		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
+
+	else if (FD_ISSET(lSocket, &readySet)){
+		SOCKET newSocket = accept(lSocket, NULL, NULL);
+		logStr = "Capacity has been reached, Try again later";
+		MessageHandler->sendMessage(newSocket, MessageHandler->stringToChar(logStr), 255);
+		shutdown(newSocket, SD_BOTH);
+		closesocket(newSocket);		
+	}
 	
 	for (SOCKET socket : socketList) {
 		if ((FD_ISSET(socket, &readySet))) {
 		
-			readMessage(socket, buffer, 255);
+			MessageHandler->readMessage(socket, buffer, 255);
 
 			//don't log connection characters that are placed in the buffer
 			if (buffer[0] >= 32) {
@@ -244,8 +252,8 @@ bool chatServer::run() {
 						break;
 					case LOGOUT:
 						logoutUser(socket, buffer);
-					case MESSAGE:
-						send(socket, buffer);
+					case SEND:
+						messageToClient(socket, buffer);
 						break;
 					case GET_LIST:
 						getList(socket);
@@ -266,123 +274,6 @@ bool chatServer::run() {
 
 	delete buffer;
 	return true;
-}
-
-int chatServer::readMessage(SOCKET _socket, char* buffer, int32_t size)
-{
-	int message = 0;
-
-	int received = recv(_socket, (char*)&message, sizeof(char), 0);
-
-	if (received == SOCKET_ERROR || received == 0) {
-
-		if (WSAGetLastError() == WSAESHUTDOWN) {
-			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN), logPath);
-			return SHUTDOWN;
-		}
-
-		else {
-			
-			return DISCONNECT;
-		}
-	}
-
-	if (message > size) {
-		return PARAMETER_ERROR;
-	}
-
-	received = tcpReceive(_socket, *buffer, message);
-
-	if (received == SOCKET_ERROR || received == 0) {
-
-		if (WSAGetLastError() == WSAESHUTDOWN) {
-			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN), logPath);
-			return SHUTDOWN;
-		}
-
-		else {
-			return DISCONNECT;
-		}
-	}
-
-	return received;
-}
-
-int chatServer::tcpReceive(SOCKET _socket, char& _data, int _length) {
-
-	int received = 0;
-
-	do {
-
-		int retrieved = recv(_socket, &_data + received, _length - received, 0);
-
-		if (retrieved < 1)
-			return retrieved;
-
-		else
-			received += retrieved;
-
-	} while (received < _length);
-
-	return received;
-}
-
-int chatServer::sendMessage(SOCKET _socket, const char* data, int32_t length)
-{
-	if (length < 0 || length > 255) {
-		log.logEntryNoVerbose("\n" + errorVerbose(PARAMETER_ERROR), logPath);
-		return PARAMETER_ERROR;
-	}
-
-	uint8_t message = length;
-
-	if (tcpSend(_socket, (char*)&message, 1) == SOCKET_ERROR) {
-
-		int lastError = WSAGetLastError();
-
-		if (lastError == WSAESHUTDOWN) {
-			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN), logPath);
-			return SHUTDOWN;
-		}
-
-		else
-			return DISCONNECT;
-	}
-
-	int sent = tcpSend(_socket, data, message);
-
-	if (sent == SOCKET_ERROR) {
-
-		int lastError = WSAGetLastError();
-
-		if (lastError == WSAESHUTDOWN) {
-			log.logEntryNoVerbose("\n" + errorVerbose(SHUTDOWN), logPath);
-			return SHUTDOWN;
-		}
-
-		else
-			return DISCONNECT;
-	}
-
-	return sent;
-}
-
-int chatServer::tcpSend(SOCKET _socket, const char* _data, int16_t _length) {
-
-	int result;
-	int sent = 0;
-
-	while (sent < _length) {
-		result = send(_socket, (const char*)_data + sent, _length - sent, 0);
-
-		if (result <= 0) {
-			return result;
-		}
-
-		sent += result;
-	}
-
-	return sent;
 }
 
 //register user logic
@@ -513,13 +404,19 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 
 	std::string userstr = MessageHandler->charToString(user);
 	std::string pwstr = MessageHandler->charToString(pass);
-	int result = ClientHandler->authenticateUser(user, pass, _socket); //add some error checking here
+
+	int result;
+	if (ClientHandler->getClient(_socket)->connected == true) {
+		result = ALREADY_CONNECTED;
+	}
+
+	else
+		result = ClientHandler->authenticateUser(user, pass, _socket);
 
 	switch (result) {
 	case SUCCESS:
 		logStr = +"\nWelcome " + userstr + "!";
 		ClientHandler->getClient(_socket)->connected = true;
-
 		ClientHandler->getClient(_socket)->log.logEntryNoVerbose("\nUser Authenticated Successfully", ClientHandler->getClient(_socket)->logFilepath);
 		break;
 	case CHAR_LIMIT_REACHED:
@@ -529,16 +426,16 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax";
 		break;
 	case ALREADY_CONNECTED:
-		logStr = userstr + " is already logged in. Unable to authenticate.";
+		logStr = "\n" + userstr + " is already logged in. Unable to authenticate.";
 		break;
 	case INCORRECT_UN_OR_PW:
 		logStr = "\nIncorrect Username or Password, Please try again.";
 		break;
 	case USER_NOT_FOUND:
-		logStr = userstr + " was not found. Please try again.";
+		logStr = "\n" + userstr + " was not found. Please try again.";
 		break;
 	case INCORRECT_PW:
-		logStr = "Incorrect Password. Please try again.";
+		logStr = "\nIncorrect Password. Please try again.";
 		break;
 			
 	}
@@ -635,27 +532,61 @@ void chatServer::commandError(SOCKET _socket) {
 }
 
 //sends a message to the client
-void chatServer::send(SOCKET _socket, char* _buffer) {
-	
-	bool toPublic = false;
+void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
+
+	bool userFound = false;
 	user* sender = ClientHandler->getClient(_socket);
 	user* receiver = nullptr;
-
 	int* lastChar = new int;
-	char* test = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
-	std::string testStr = MessageHandler->charToString(test);
+	user* sendToMe = sender;
 
-	for (user* client : ClientHandler->clients) {
-		if (client->username == testStr) {
+	sender->log.logEntryNoVerbose("\n" + MessageHandler->charToString(_buffer), sender->logFilepath);
+	char* charToSend = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *lastChar);
+	char* receiverName = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
-			toPublic = false;
-			receiver = client;
 
-		}
+	if (ClientHandler->getClient(_socket)->connected = false) {
+		logStr = "\nYou must be logged in to use this command.";
+		sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
 	}
 
-	if (!toPublic) {
+	else if (MessageHandler->charToString(receiverName) == "public") {
 
+		//broadcast logic
+	}
+
+	else {
+
+		charToSend = (char*)MessageHandler->extract(_buffer, *lastChar+1, *lastChar);
+		std::string receiverNameStr = MessageHandler->charToString(receiverName);
+
+		for (user* client : ClientHandler->clients) {
+			if (client->username == receiverNameStr && client->connected == true) {	
+				receiver = client;
+				userFound = true;
+			}
+		}
+
+		if (!userFound) {
+			logStr = "\nClient was not found.Please check connected clients.";
+			sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
+		}
+
+		else if (userFound && receiver != nullptr) {
+
+			logStr = "\n[" + sender->username + "]:" + MessageHandler->charToString(charToSend);
+
+			//should never hit this, fail safe if we receive a message too long
+			if (logStr.length() > 255) {
+				logStr = "\nMessage Length too long, please consider sending multiple messages.";
+				sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
+
+			}
+
+			sendToMe = receiver;
+		}
+			
+			MessageHandler->sendMessage(sendToMe->socket, MessageHandler->stringToChar(logStr), 255);
 	}
 
 	delete lastChar;
