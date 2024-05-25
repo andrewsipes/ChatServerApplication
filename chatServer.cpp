@@ -7,6 +7,28 @@ chatServer::chatServer() {
 	logPath = "logs/chatServer.txt";
 	publicLogPath = "logs/publiclog.txt";
 
+	//create logs
+	std::fstream makeLog;
+
+	makeLog.open(logPath, std::ios::app);
+
+	if (!makeLog) {
+		logStr = "\nMaking server log file...";
+		log.logEntryNoVerbose(logStr, logPath);
+		makeLog.close();
+	}
+
+	makeLog.open(publicLogPath, std::ios::app);
+
+	if (!makeLog) {
+		logStr = "\nMaking public log file...";
+		log.logEntryNoVerbose(logStr, logPath);
+		log.logEntryNoVerbose("", publicLogPath);
+
+		makeLog.close();
+	}
+
+
 	//Initialize the wsaData object
 	WSADATA wsaData;
 	WSAStartup(WINSOCK_VERSION, &wsaData);
@@ -64,7 +86,7 @@ chatServer::chatServer() {
 		input = ClientHandler->checkCapacity(capacity);
 
 		if (input == CAPACITY_REACHED) {
-			log.logEntry("Unfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.", logPath);
+			log.logEntry("\nUnfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.", logPath);
 
 		}
 
@@ -73,7 +95,7 @@ chatServer::chatServer() {
 		}
 
 		else if (input == SUCCESS) {
-			log.logEntry("Capacity is set at " + std::to_string(capacity) + " clients.", logPath);
+			log.logEntry("\nCapacity is set at " + std::to_string(capacity) + " clients.", logPath);
 		}
 
 		std::cin.clear();
@@ -102,7 +124,7 @@ chatServer::chatServer() {
 			}
 
 			else if (input == SUCCESS) {
-				log.logEntry(MessageHandler->charToString(&commandChar) + " will be the command character", logPath);
+				log.logEntry("\n " + MessageHandler->charToString(&commandChar) + " will be the command character", logPath);
 			}
 
 		}
@@ -327,16 +349,16 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	switch (result) {
 	case SUCCESS:
 		logStr = + "\nCongratulations! " + userstr + " is now registered with password: " + pwstr;
-		log.logEntryNoVerbose("\n" + userstr + "is now registered... ", logPath);
+		log.logEntry("\n" + userstr + "is now registered... ", logPath);
 		break;
 	case CHAR_LIMIT_REACHED:		
 		logStr =  "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
 		break;
 	case PARAMETER_ERROR:
-		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax";
+		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax.";
 		break;
 	case ALREADY_REGISTERED:
-		logStr = "\nThis user is already registered, Please Try again\n";
+		logStr = "\nThis user is already registered, Please Try again.";
 		break;
 	case ALREADY_CONNECTED:
 		logStr = "\nYou cannot register while logged in. Please log out first.";
@@ -420,9 +442,9 @@ void chatServer::helpScreen(SOCKET _socket) {
 		"\n" + commandStr + "send\t<username> <message>\nsends a message to client (255 char limit)\n" +
 		"\n" + commandStr + "send\t<message>\nsends a message all connnected clients\n\0";
 
-	std::string str3=
-		"\n" + commandStr + "getlog\tuser\nretrieves logs for a specific user\n" +
-		"\n" + commandStr + "getlog\tpublic\nretrieves public logs\n\0";
+	std::string str3 =
+		"\n" + commandStr + "getlog\nretrieves public logs\n\n" +
+		commandStr + "getlog\tserver\nretrieves logs for a specific user\n\0";
 
 		user* user = ClientHandler->getClient(_socket);
 		//log.logEntryNoVerbose(str1 + str2 + str3, logPath);
@@ -593,7 +615,7 @@ void chatServer::getList(SOCKET _socket, char* _buffer) {
 	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
 	if (!client->connected) {
-		logStr = "You must be logged in to use this command.";
+		logStr = "\nYou must be logged in to use this command.";
 	}
 
 	else if (extra[0] != '\0') {
@@ -708,7 +730,7 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *lastChar + 1, *lastChar);
 
 	if (!client->connected) {
-		logStr = "You must be logged in to use this command.";
+		logStr = "\nYou must be logged in to use this command.";
 		log.logEntryNoVerbose(logStr, logPath);
 		MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
 	}
@@ -723,7 +745,7 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 
 		if (client->connected == true) {
 
-			if (MessageHandler->charToString(logType) == "user") {
+			if (MessageHandler->charToString(logType) == "server") {
 				logStream.open(logPath, std::ios::in);
 
 				if (logStream.is_open()) {
@@ -747,7 +769,7 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 
 			}
 
-			else if (MessageHandler->charToString(logType) == "public") {
+			else if (MessageHandler->charToString(logType) == "\0") {
 				logStream.open(publicLogPath, std::ios::in);
 
 				if (logStream.is_open()) {
