@@ -5,7 +5,7 @@ user::user(std::string _username, std::string _password, SOCKET _socket) {
 	password = _password;
 	connected = false;
 
-	logFilepath = "logs/" + username + ".txt";
+	//logFilepath = "logs/" + username + ".txt";
 	
 	if (_socket != 0) {
 		socket = _socket;
@@ -17,7 +17,7 @@ user::user(SOCKET _socket) {
 	password = "";
 	connected = false;
 
-	logFilepath = "logs/Client " + std::to_string(_socket) + ".txt";
+	//logFilepath = "logs/Client " + std::to_string(_socket) + ".txt";
 
 	if (_socket != 0) {
 		socket = _socket;

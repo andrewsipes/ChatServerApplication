@@ -5,6 +5,7 @@
 
 chatServer::chatServer() {
 	logPath = "logs/chatServer.txt";
+	publicLogPath = "logs/publiclog.txt";
 
 	//Initialize the wsaData object
 	WSADATA wsaData;
@@ -139,6 +140,7 @@ int chatServer::init() {
 		return SETUP_ERROR;
 	}
 
+
 	//Bind
 	cAddr.sin_family = AF_INET;					
 	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	
@@ -217,7 +219,6 @@ bool chatServer::run() {
 		logStr = "Welcome to the Chat Server!\nPlease use ' " + commandStr + " ' followed by a command to get started." +
 			"For example, to get list of commands, enter: " + commandStr + "help";
 
-		//client->log.logEntryNoVerbose("\n" + logStr, client->logFilepath);
 		MessageHandler->stringConvertSend(logStr, newSocket);
 
 	}
@@ -228,6 +229,7 @@ bool chatServer::run() {
 		log.logEntry("\nClient " + std::to_string(newSocket) + " attempted to connect, but capacity has been reached...", logPath);
 		logStr = "\nCapacity has been reached, Try again later";
 		MessageHandler->sendMessage(newSocket, MessageHandler->stringToChar(logStr), 255);
+		FD_CLR(newSocket, &masterSet);
 		shutdown(newSocket, SD_BOTH);
 		closesocket(newSocket);		
 	}
@@ -248,7 +250,13 @@ bool chatServer::run() {
 			else if (buffer[0] >= 32) {
 				//Add user into Vector of users, and log
 				user* client = ClientHandler->getClient(socket);
-				client->log.logEntryNoVerbose("\n" + MessageHandler->charToString(buffer), client->logFilepath);
+				if (client->username != "") {
+					log.logEntryNoVerbose("\n" +client->username + ": " + MessageHandler->charToString(buffer), logPath);
+				}
+
+				else {
+					log.logEntryNoVerbose("\nClient " + std::to_string(client->socket) + ": " + MessageHandler->charToString(buffer), logPath);
+				}
 
 				//if command is picked up, check the command, and do the logic associated with it
 				if (buffer[0] == commandChar) {
@@ -306,7 +314,7 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 
 	int result;
 	std::string userstr, pwstr;
-	if (extra != nullptr || extra != "\0") {
+	if (extra[0] != '\0') {
 		result = INCORRECT_COMMAND;
 	}
 
@@ -338,7 +346,7 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	}
 
 	if (result != INCORRECT_COMMAND) {
-		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+		log.logEntryNoVerbose(logStr, logPath);
 		MessageHandler->stringConvertSend(logStr, _socket);
 	}
 }
@@ -417,7 +425,7 @@ void chatServer::helpScreen(SOCKET _socket) {
 		"\n" + commandStr + "getlog\tpublic\nretrieves public logs\n\0";
 
 		user* user = ClientHandler->getClient(_socket);
-		user->log.logEntryNoVerbose(str1 + str2 + str3, user->logFilepath);
+		//log.logEntryNoVerbose(str1 + str2 + str3, logPath);
 
 		MessageHandler->stringConvertSend(str1, _socket);
 		MessageHandler->stringConvertSend(str2, _socket);
@@ -454,7 +462,7 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 	case SUCCESS:
 		logStr = +"\nWelcome " + userstr + "!";
 		ClientHandler->getClient(_socket)->connected = true;
-		ClientHandler->getClient(_socket)->log.logEntryNoVerbose("\nUser Authenticated Successfully", ClientHandler->getClient(_socket)->logFilepath);
+		log.logEntryNoVerbose("\nUser Authenticated Successfully", logPath);
 		log.logEntry("\n" + ClientHandler->getClient(_socket)->username + " logged in...", logPath);
 		break;
 	case CHAR_LIMIT_REACHED:
@@ -482,7 +490,7 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 	}
 
 	if (result != INCORRECT_COMMAND) {
-		ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+		log.logEntryNoVerbose(logStr, logPath);
 		MessageHandler->stringConvertSend(logStr, _socket);
 	}
 
@@ -533,9 +541,10 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 				}
 			}
 
-			ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+		log.logEntryNoVerbose(logStr, logPath);
 			MessageHandler->stringConvertSend(logStr, _socket);
 
+			FD_CLR(_socket, &masterSet);
 			shutdown(_socket, SD_BOTH);
 			closesocket(_socket);
 			log.logEntry("\nClient " + std::to_string(ClientHandler->getClient(_socket)->socket) + " has logged out", logPath);
@@ -556,9 +565,10 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 				}
 			}
 
-			ClientHandler->getClient(_socket)->log.logEntryNoVerbose(logStr, ClientHandler->getClient(_socket)->logFilepath);
+			log.logEntryNoVerbose(logStr, logPath);
 			MessageHandler->stringConvertSend(logStr, _socket);
 
+			FD_CLR(_socket, &masterSet);
 			shutdown(_socket, SD_BOTH);
 			closesocket(_socket);
 			log.logEntry("\n" + ClientHandler->getClient(_socket)->username + " has logged out", logPath);
@@ -582,38 +592,37 @@ void chatServer::getList(SOCKET _socket, char* _buffer) {
 	char* command = (char*)MessageHandler->extractUntilSpace(_buffer, 0, *last);
 	char* extra = (char*)MessageHandler->extractUntilSpace(_buffer, *last + 1, *last);
 
-	if (extra[0] != '\0') {
+	if (!client->connected) {
+		logStr = "You must be logged in to use this command.";
+	}
+
+	else if (extra[0] != '\0') {
 		commandError(_socket);
 	}
 
 	else {
-		if (client->connected == true) {
-			logStr = "\nConnected Clients: ";
+		logStr = "\nConnected Clients: ";
 
-			for (auto* client : ClientHandler->clients) {
-				if (client->username != "" && client->connected) {
-					logStr = logStr + client->username + ",";
-				}
+		for (auto* client : ClientHandler->clients) {
+			if (client->username != "" && client->connected) {
+				logStr = logStr + client->username + ",";
 			}
 		}
+	}	
 
-		else {
-			logStr = "You must be logged in to use this command.";
-		}
-		client->log.logEntryNoVerbose(logStr, client->logFilepath);
-		MessageHandler->stringConvertSend(logStr, _socket);
-	}
-
+	log.logEntryNoVerbose(logStr, logPath);
+	MessageHandler->stringConvertSend(logStr, _socket);
+	
 	delete last;
 }
 
 //Sends client a message saying their syntax was wrong
 void chatServer::commandError(SOCKET _socket) {
-	std::string str = "Error: Syntax is incorrect. Use " + commandStr + "help for command syntax.";
+	logStr = "\nError: Syntax is incorrect. Use " + commandStr + "help for command syntax.";
 
 	user* client = ClientHandler->getClient(_socket);
-	client->log.logEntryNoVerbose("\n" + str, ClientHandler->getClient(_socket)->logFilepath);
-	MessageHandler->stringConvertSend("\n" + str, _socket);
+	log.logEntryNoVerbose(logStr, logPath);
+	MessageHandler->stringConvertSend(logStr, _socket);
 
 }
 
@@ -632,12 +641,23 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 
 	if (ClientHandler->getClient(_socket)->connected == false) {
 		logStr = "\nYou must be logged in to use this command.";
-		sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
+		log.logEntryNoVerbose(logStr, logPath);
 	}
 
 	else if (MessageHandler->charToString(receiverName) == "public") {
 
-		//broadcast logic
+		charToSend = (char*)MessageHandler->extract(_buffer, *lastChar + 1, *lastChar);
+		logStr = "\n[" + sender->username + "]:" + MessageHandler->stringToChar(charToSend);
+		publiclog.logEntryNoVerbose(logStr, publicLogPath);
+
+		for (user* client : ClientHandler->clients) {
+			if (client->connected) {
+				
+				MessageHandler->sendMessage(client->socket, MessageHandler->stringToChar(logStr), 255);
+				
+			}
+		}
+		
 	}
 
 	else {
@@ -654,7 +674,7 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 
 		if (!userFound) {
 			logStr = "\nClient was not found.Please check connected clients.";
-			sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
+			log.logEntryNoVerbose(logStr, logPath);
 		}
 
 		else if (userFound && receiver != nullptr) {
@@ -664,7 +684,7 @@ void chatServer::messageToClient(SOCKET _socket, char* _buffer) {
 			//should never hit this, fail safe if we receive a message too long
 			if (logStr.length() > 255) {
 				logStr = "\nMessage Length too long, please consider sending multiple messages.";
-				sender->log.logEntryNoVerbose(logStr, sender->logFilepath);
+				log.logEntryNoVerbose(logStr, logPath);
 
 			}
 
@@ -689,7 +709,7 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 
 	if (!client->connected) {
 		logStr = "You must be logged in to use this command.";
-		client->log.logEntryNoVerbose(logStr, client->logFilepath);
+		log.logEntryNoVerbose(logStr, logPath);
 		MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
 	}
 
@@ -704,29 +724,6 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 		if (client->connected == true) {
 
 			if (MessageHandler->charToString(logType) == "user") {
-				logStream.open(client->logFilepath, std::ios::in);
-
-				if (logStream.is_open()) {
-					while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
-
-						buffer[logStream.gcount()] = '\0'; //add null terminator
-						MessageHandler->sendMessage(_socket, buffer, 255);
-					}
-
-					logStream.close();
-				}
-
-				else {
-					logStr = "\nUnable to Open Log file...";
-					log.logEntryNoVerbose(logStr, logPath);
-					client->log.logEntryNoVerbose(logStr, client->logFilepath);
-					MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
-
-				}
-
-			}
-
-			else if (MessageHandler->charToString(logType) == "public") {
 				logStream.open(logPath, std::ios::in);
 
 				if (logStream.is_open()) {
@@ -742,7 +739,31 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 				else {
 					logStr = "\nUnable to Open Log file...";
 					log.logEntryNoVerbose(logStr, logPath);
-					client->log.logEntryNoVerbose(logStr, client->logFilepath);
+					log.logEntryNoVerbose(logStr, logPath);
+					MessageHandler->stringConvertSend(logStr, _socket);
+					
+
+				}
+
+			}
+
+			else if (MessageHandler->charToString(logType) == "public") {
+				logStream.open(publicLogPath, std::ios::in);
+
+				if (logStream.is_open()) {
+					while (logStream.read(buffer, maxChars) || logStream.gcount() > 0) {
+
+						buffer[logStream.gcount()] = '\0'; //add null terminator
+						MessageHandler->sendMessage(_socket, buffer, 255);
+					}
+
+					logStream.close();
+				}
+
+				else {
+					logStr = "\nUnable to Open Log file...";
+					log.logEntryNoVerbose(logStr, logPath);
+					log.logEntryNoVerbose(logStr, logPath);
 					MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
 
 				}
@@ -756,7 +777,7 @@ void chatServer::getLogForUser(SOCKET _socket, char* _buffer){
 
 		else {
 			logStr = "\nYou must be logged in to use this command.";
-			client->log.logEntryNoVerbose(logStr, client->logFilepath);
+			log.logEntryNoVerbose(logStr, logPath);
 			MessageHandler->sendMessage(_socket, MessageHandler->stringToChar(logStr), 255);
 		}
 	}

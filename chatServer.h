@@ -27,6 +27,7 @@ class chatServer
 	logger log;
 	logger publiclog; //only for public messages
 	std::string logPath;
+	std::string publicLogPath;
 	std::string logStr;
    
 	SOCKET lSocket;

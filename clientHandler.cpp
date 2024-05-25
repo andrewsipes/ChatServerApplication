@@ -137,15 +137,15 @@ int clientHandler::authenticateUser(char* _user, char* _pass, SOCKET _socket) {
 
 								clients.erase(iter);
 
-								std::string newFilePath = "logs/" + clientSocket->username + ".txt";
-								std::string oldFilePath = "logs/Client " + std::to_string(_socket) + ".txt";
-								const char* oldPath = oldFilePath.c_str();
-								const char* newPath = newFilePath.c_str();
+								//std::string newFilePath = "logs/" + clientSocket->username + ".txt";
+								//std::string oldFilePath = "logs/Client " + std::to_string(_socket) + ".txt";
+								//const char* oldPath = oldFilePath.c_str();
+								//const char* newPath = newFilePath.c_str();
 
-								clientSocket->logFilepath = newFilePath;
+								//clientSocket->logFilepath = newFilePath;
 
-								//rename file
-								rename(oldPath, newPath);
+								////rename file
+								//rename(oldPath, newPath);
 
 								return SUCCESS;
 							}
