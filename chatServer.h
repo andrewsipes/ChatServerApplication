@@ -13,13 +13,15 @@
 class chatServer
 {
 	const char validChars[5] = { '~', '@', '#', '$'};
-	uint16_t port;
-	int capacity;
+	char port[10];
+	char capacity[5];
 	char hostname[1024];
 	char ipv4Addr[INET_ADDRSTRLEN];
 	char ipv6Addr[INET6_ADDRSTRLEN];
 	char commandChar;
 	std::string commandStr;
+	int intCap;
+	int portCap;
 	
 	
 	clientHandler* ClientHandler;

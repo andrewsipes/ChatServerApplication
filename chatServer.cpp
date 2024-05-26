@@ -15,18 +15,18 @@ chatServer::chatServer() {
 	if (!makeLog) {
 		logStr = "\nMaking server log file...";
 		log.logEntryNoVerbose(logStr, logPath);
-		makeLog.close();
 	}
 
+	makeLog.close();
 	makeLog.open(publicLogPath, std::ios::app);
 
 	if (!makeLog) {
 		logStr = "\nMaking public log file...";
 		log.logEntryNoVerbose(logStr, logPath);
 		log.logEntryNoVerbose("", publicLogPath);
-
-		makeLog.close();
 	}
+
+	makeLog.close();
 
 
 	//Initialize the wsaData object
@@ -58,19 +58,42 @@ chatServer::chatServer() {
 	int input = SETUP_ERROR;
 
 	while (input != SUCCESS) {
-		std::cin.clear();
-		log.logEntry("\nWhat port should the server listen on? ", logPath);
-		std::cin >> port;
-		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(port), logPath);
 
-		input = checkPort(port);
+		bool charCheck = false;
+		while (!charCheck) {
+
+			std::cin.clear();
+			log.logEntry("\nWhat port should the server listen on? ", logPath);
+			std::cin >> port;
+			log.logEntryNoVerbose("\nUser Entered: " + MessageHandler->charToString(port), logPath);
+
+			//check for invalid characters
+			for (char _char : port) {
+
+				if (_char == '\0') {
+					charCheck = true;
+				}
+
+				else if (_char < 48 || _char > 57) {
+					log.logEntry("\nInvalid Character, please try again.", logPath);
+					std::cin.clear();
+					std::cin.ignore();
+					break;
+				}
+			}
+		}
+
+		portCap = std::stoi(MessageHandler->charToString(port));
+
+		input = checkPort(portCap);
 		if (input == INCORRECT_PORT) {
 			log.logEntry("\nInvalid Port Entered, ports 0-1023 and 49152-65535 are reserved. Please try again", logPath);
 		}
 
 		else if (input == SUCCESS) {
-			log.logEntry("Port " + std::to_string(port) + " will be used\n", logPath);
+			log.logEntry("Port " + MessageHandler->charToString(port) + " will be used\n", logPath);
 		}
+
 		std::cin.clear();
 		std::cin.ignore();
 	}
@@ -79,11 +102,32 @@ chatServer::chatServer() {
 	
 	while (input != SUCCESS) {
 	
-		log.logEntry("\nWhat is the user capacity for this server? ", logPath);
-		std::cin >> capacity;
-		log.logEntryNoVerbose("\nUser Entered: " + std::to_string(capacity), logPath);
+		bool charCheck = false;
+		
+		while (!charCheck) {
 
-		input = ClientHandler->checkCapacity(capacity);
+			log.logEntry("\nWhat is the user capacity for this server? ", logPath);
+			std::cin >> capacity;
+			log.logEntryNoVerbose("\nUser Entered: " + MessageHandler->charToString(capacity), logPath);
+
+			//check for invalid characters
+			for (char _char : capacity) {
+
+				if (_char == '\0') {
+					charCheck = true;
+				}
+
+				else if (_char < 48 || _char > 57) {
+					log.logEntry("\nInvalid Character, please try again.", logPath);
+					std::cin.clear();
+					std::cin.ignore();
+					break;
+				}
+			}
+		}
+
+		intCap = std::stoi(MessageHandler->charToString(capacity));
+		input = ClientHandler->checkCapacity(intCap);
 
 		if (input == CAPACITY_REACHED) {
 			log.logEntry("\nUnfortunately, the max capacity is " + std::to_string(MAX_CAPACITY) + ". Please try again.", logPath);
@@ -95,7 +139,7 @@ chatServer::chatServer() {
 		}
 
 		else if (input == SUCCESS) {
-			log.logEntry("\nCapacity is set at " + std::to_string(capacity) + " clients.", logPath);
+			log.logEntry("\nCapacity is set at " + MessageHandler->charToString(capacity) + " clients.", logPath);
 		}
 
 		std::cin.clear();
@@ -126,7 +170,6 @@ chatServer::chatServer() {
 			else if (input == SUCCESS) {
 				log.logEntry("\n " + MessageHandler->charToString(&commandChar) + " will be the command character", logPath);
 			}
-
 		}
 
 		std::cin.clear();
@@ -138,13 +181,12 @@ chatServer::chatServer() {
 	log.logEntry("\nHostname: " + MessageHandler->charToString(hostname), logPath);
 	log.logEntry("\nIPv4 Address: " + MessageHandler->charToString(ipv4Addr), logPath);
 	log.logEntry("\nIPv6 Address : " + MessageHandler->charToString(ipv6Addr), logPath);
-	log.logEntry("\nPort: " + std::to_string(port), logPath);
-	log.logEntry("\nCapacity: " + std::to_string(capacity), logPath);
+	log.logEntry("\nPort: " + MessageHandler->charToString(port), logPath);
+	log.logEntry("\nCapacity: " + MessageHandler->charToString(capacity), logPath);
 	log.logEntry("\nCommand Char: " + MessageHandler->charToString(&commandChar), logPath);
 	log.logEntry("\nWaiting for connections...", logPath);
 
 	commandStr = MessageHandler->charToString(&commandChar);
-
 
 }
 
@@ -166,7 +208,7 @@ int chatServer::init() {
 	//Bind
 	cAddr.sin_family = AF_INET;					
 	cAddr.sin_addr.S_un.S_addr = INADDR_ANY;	
-	cAddr.sin_port = htons(port);				
+	cAddr.sin_port = htons(portCap);				
 	int result = bind(lSocket, (SOCKADDR*)&cAddr, sizeof(cAddr)); 
 	if (result == SOCKET_ERROR) {
 		log.logEntry(errorVerbose(BIND_ERROR), logPath);
@@ -174,7 +216,7 @@ int chatServer::init() {
 	}
 
 	//Listen
-	if (listen(lSocket, capacity + 1) == SOCKET_ERROR) {
+	if (listen(lSocket, intCap) == SOCKET_ERROR) {
 		log.logEntry(errorVerbose(SETUP_ERROR), logPath);
 		return SETUP_ERROR;
 	}
@@ -183,7 +225,6 @@ int chatServer::init() {
 	log.logEntryNoVerbose("\nZeroing Master Set...", logPath);
 	FD_SET(lSocket, &masterSet);
 	log.logEntryNoVerbose("\nAdding Listening Socket to MasterSet..", logPath);
-	//socketList.push_back(lSocket);
 	
 	return SUCCESS;
 
@@ -229,7 +270,7 @@ bool chatServer::run() {
 	select(0, &readySet, NULL, NULL, &tv);
 
 	//Add new socket and client to the server
-	if (socketList.size() < capacity && FD_ISSET(lSocket, &readySet)){
+	if (socketList.size() < intCap && FD_ISSET(lSocket, &readySet)){
 		SOCKET newSocket = accept(lSocket, NULL, NULL);
 		socketList.push_back(newSocket);
 		FD_SET(newSocket, &masterSet);
@@ -308,16 +349,13 @@ bool chatServer::run() {
 					case INCORRECT_COMMAND:
 						commandError(socket);
 						break;
-
 					}
-
 				}
 
 				else if (buffer[0] != commandChar) {
 					commandError(socket);
 				}
 			}
-	
 		}
 	}
 
