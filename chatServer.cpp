@@ -387,7 +387,7 @@ void chatServer::registerUser(SOCKET _socket, char* _buffer) {
 	switch (result) {
 	case SUCCESS:
 		logStr = + "\nCongratulations! " + userstr + " is now registered with password: " + pwstr;
-		log.logEntry("\n" + userstr + "is now registered... ", logPath);
+		log.logEntry("\n" + userstr + " is now registered... ", logPath);
 		break;
 	case CHAR_LIMIT_REACHED:		
 		logStr =  "\nYour Username or Password is too long. The limit is 20 characters each, please try again.";
@@ -478,11 +478,11 @@ void chatServer::helpScreen(SOCKET _socket) {
 	std::string str2 =
 		"\n" + commandStr + "getlist\t provides list of active clients\n" +
 		"\n" + commandStr + "send\t<username> <message>\nsends a message to client (255 char limit)\n" +
-		"\n" + commandStr + "send\t<message>\nsends a message all connnected clients\n\0";
+		"\n" + commandStr + "send\tpublic <message>\nsends a message all connnected clients\n\0";
 
 	std::string str3 =
 		"\n" + commandStr + "getlog\nretrieves public logs\n\n" +
-		commandStr + "getlog\tserver\nretrieves logs for a specific user\n\0";
+		commandStr + "getlog\tserver\nretrieves server logs (include user commands)\n\0";
 
 		user* user = ClientHandler->getClient(_socket);
 		//log.logEntryNoVerbose(str1 + str2 + str3, logPath);
@@ -532,7 +532,7 @@ void chatServer::loginUser(SOCKET _socket, char* _buffer) {
 		logStr = "\nUsername or Password was blank, please reference " + commandStr + " help for the correct syntax";
 		break;
 	case ALREADY_CONNECTED:
-		logStr = "\n" + userstr + " is already logged in. Unable to authenticate.";
+		logStr = "\n" + ClientHandler->getClient(_socket)->username + " is already logged in. Unable to authenticate.";
 		break;
 	case INCORRECT_UN_OR_PW:
 		logStr = "\nIncorrect Username or Password, Please try again.";
