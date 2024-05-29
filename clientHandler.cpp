@@ -16,7 +16,7 @@ void clientHandler::loadUsers() {
 	std::string username, password;
 
 	//read each line from vault text file into the user's data structure
-	vault.open("logs/vault.txt", std::ios_base::in);
+	vault.open("../logs/vault.txt", std::ios_base::in);
 	if (vault.is_open()) {
 		while (std::getline(vault, line)) {
 			std::istringstream iss(line);
@@ -76,7 +76,7 @@ int clientHandler::registerUser(char& _user, char& _pass, SOCKET _socket) {
 	user* newUser = new user(userStr, passStr, 0);
 	clients.push_back(newUser);
 
-	vault.open("logs/vault.txt", std::ios_base::app);
+	vault.open("../logs/vault.txt", std::ios_base::app);
 	if (vault.is_open()) {
 		vault << userStr + " " + passStr + "\n";
 		vault.close();

@@ -3,9 +3,11 @@
 #include <string>
 #include <sstream>
 
+#define BROADCAST_PORT 65000
+
 chatServer::chatServer() {
-	logPath = "logs/chatServer.txt";
-	publicLogPath = "logs/publiclog.txt";
+	logPath = "../logs/chatServer.txt";
+	publicLogPath = "../logs/publiclog.txt";
 
 	//create logs
 	std::fstream makeLog;
@@ -296,6 +298,23 @@ bool chatServer::run() {
 		shutdown(newSocket, SD_BOTH);
 		closesocket(newSocket);		
 	}
+
+	//UDP BROADCAST
+	{
+		int val = 1;
+		SOCKET udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		setsockopt(udpSocket, SOL_SOCKET, SO_BROADCAST, (char*)&val, sizeof(val));
+		sockaddr_in bcAddr;
+		bcAddr.sin_family = AF_INET;
+		bcAddr.sin_addr.s_addr = INADDR_BROADCAST;
+		bcAddr.sin_port = htons(BROADCAST_PORT);
+
+		std::string broadcastMe = "CHATSERVER: " + MessageHandler->charToString(hostname) + "\nIP ADDRESS: " + MessageHandler->charToString(ipv4Addr) +  "\nIPV6 ADDRESS: " + MessageHandler->charToString(ipv6Addr) + "\nPORT: " + MessageHandler->charToString(port);
+		char* udpBuffer = (char*)MessageHandler->stringToChar(broadcastMe);
+		sendto(udpSocket, udpBuffer, strlen(udpBuffer), 0, (sockaddr*)&bcAddr, sizeof(bcAddr));
+		shutdown(udpSocket, SD_BOTH);
+		closesocket(udpSocket);
+	}
 	
 	//Check each socket for messages
 	for (SOCKET socket : socketList) {
@@ -304,7 +323,7 @@ bool chatServer::run() {
 			MessageHandler->readMessage(socket, buffer, 255);
 
 			//Disconnect Character string, remove socket from list and update current capacity.
-			if (buffer[0] == -51) {
+			if (buffer[0] == '\0') {
 				logoutUser(socket, buffer);
 				
 			}
@@ -571,7 +590,7 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 
 	else {
 
-		if (_buffer[0] == -51) {
+		if (_buffer[0] == '\0') {
 
 			for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
 				SOCKET oldSocket = *iter;
@@ -581,7 +600,15 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 					break;
 				}
 			}
-			log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
+
+			if(ClientHandler->getClient(_socket)->username == "")
+				log.logEntry("\nClient " + std::to_string(_socket) + " has disconnected...", logPath);
+
+			else if (ClientHandler->getClient(_socket)->username != "") {
+				ClientHandler->getClient(_socket)->connected = false;
+				log.logEntry("\n" + ClientHandler->getClient(_socket)->username+ " has disconnected...", logPath);
+			}
+
 			FD_CLR(_socket, &masterSet);
 			shutdown(_socket, SD_BOTH);
 			closesocket(_socket);
@@ -608,6 +635,30 @@ void chatServer::logoutUser(SOCKET _socket, char* _buffer) {
 			shutdown(_socket, SD_BOTH);
 			closesocket(_socket);
 			log.logEntry("\nClient " + std::to_string(ClientHandler->getClient(_socket)->socket) + " has logged out", logPath);
+
+		}
+
+		else if (ClientHandler->getClient(_socket)->connected == true) {
+
+			logStr = "\nYou successfully logged out.";
+			ClientHandler->getClient(_socket)->connected = false;
+
+			for (auto iter = socketList.begin(); iter != socketList.end(); ++iter) {
+				SOCKET oldSocket = *iter;
+
+				if (oldSocket == _socket) {
+					socketList.erase(iter);
+					break;
+				}
+			}
+
+			log.logEntryNoVerbose(logStr, logPath);
+			MessageHandler->stringConvertSend(logStr, _socket);
+
+			FD_CLR(_socket, &masterSet);
+			shutdown(_socket, SD_BOTH);
+			closesocket(_socket);
+			log.logEntry("\n" + ClientHandler->getClient(_socket)->username + " has logged out", logPath);
 
 		}
 
